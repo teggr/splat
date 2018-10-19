@@ -27,5 +27,20 @@ Server jar available in target/splat-web-{version}.jar
 14. install java (default-jdk) (https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04)
 15. make directory ~/splat-runtime
 16. upload the jar to this directory
-17. run the jar - java -jar splat-web-{version}.jar
-18. use a tunnel to access the web application
+17. run the jar - java -jar splat-web-{version}.jar (see configuration section first!!)
+18. use a tunnel to access the web application (mobaxterm/ssh)
+
+# set configuration
+
+create a spring configuration file
+
+	cd ~/splat-runtime
+	mkdir config
+	nano config/application.properties
+
+	storage.path=/tmp/splat/storage
+
+# upload application
+
+	go to index.html
+	upload the file. note will clear out with each restart
