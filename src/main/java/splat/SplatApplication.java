@@ -17,7 +17,7 @@ public class SplatApplication {
 	@ConfigurationProperties("storage")
 	public StorageProperties storageProperties() {
 		return new StorageProperties();
-	}
+	}	
 
 	@Bean
 	public FilesystemStorageService filesystemStorageService(StorageProperties properties) {

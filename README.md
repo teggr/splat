@@ -38,7 +38,12 @@ create a spring configuration file
 	mkdir config
 	nano config/application.properties
 
+	# storage
 	storage.path=/tmp/splat/storage
+	
+	# access
+	access.username=<a username>
+	access.password=<a strong password> # see https://passwordsgenerator.net/
 
 # upload application
 
