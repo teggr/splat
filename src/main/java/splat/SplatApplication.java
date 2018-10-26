@@ -6,6 +6,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import splat.core.ApplicationJarStorageService;
+import splat.core.FilesystemStorageService;
+import splat.core.StorageProperties;
+
 @SpringBootApplication
 public class SplatApplication {
 
@@ -25,7 +29,7 @@ public class SplatApplication {
 	}
 
 	@Bean
-	CommandLineRunner init(StorageService storageService) {
+	CommandLineRunner init(ApplicationJarStorageService storageService) {
 		return (args) -> {
 			storageService.init();
 			storageService.deleteAll();
