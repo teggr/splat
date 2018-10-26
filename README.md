@@ -16,9 +16,9 @@ Server jar available in target/splat-web-{version}.jar
 4. get started with a droplet
 5. distribution: choose an ubuntu distribution
 6. size: standard 1gb/1CPU
-7. datacenter: London
+7. datacenter: London (optional add DO monitoring agent)
 8. Create a new SSH key or use existing
-9. 1 droplet
+9. 1 droplet 
 10. create droplet
 11. go to droplet configuration
 12. create ssh session using private key + ip address + root username (mobaxterm)
