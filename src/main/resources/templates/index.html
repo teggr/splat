@@ -6,6 +6,27 @@
   </head>
   <body>
     <th:block th:replace="fragments/header :: common" />
+    
+    <h2>Applications</h2>
+    <th:block th:if="applications.empty">
+	    <table class="table">
+	    	<thead>
+	    		<tr>
+	    			<th>Name</th>
+	    			<th>Status</th>
+	    		</tr>	    
+	    	</thead>
+	    	<tbody>
+	    		<tr th:each="app : ${applications}">
+	    			<td th:text="${app.name}"></td>
+	    			<td th:text="${app.status}"></td>
+	    		</tr>
+	    	</tbody>
+	    </table>
+    </th:block>
+    <th:block th:else="">
+    	<p>You've not deployed any applications yet. You can start by uploading an application below</p>
+    </th:block>
 	
 	<div>
 		<a th:href="@{/application-upload}" class="btn btn-primary">Upload Application</a>

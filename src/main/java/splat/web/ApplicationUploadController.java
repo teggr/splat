@@ -1,12 +1,9 @@
 package splat.web;
 
 import java.io.IOException;
-import java.util.stream.Collectors;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import splat.core.ApplicationJarResource;
-import splat.core.ApplicationJarStorageService;
-import splat.core.StorageFileNotFoundException;
+import splat.core.ApplicationService;
+import splat.core.ApplicationServiceException;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,15 +23,10 @@ import splat.core.StorageFileNotFoundException;
 @RequestMapping("/application-upload")
 public class ApplicationUploadController {
 
-	private final ApplicationJarStorageService storageService;
+	private final ApplicationService applicationService;
 
 	@GetMapping
 	public String get(Model model) throws IOException {
-
-		log.info("Get all added files");
-
-		model.addAttribute("files",
-				storageService.loadAll().map(path -> path.getFileName().toString()).collect(Collectors.toList()));
 
 		return "application-upload";
 
@@ -42,24 +34,19 @@ public class ApplicationUploadController {
 
 	@PostMapping
 	public String post(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes)
-			throws IOException {
+			throws ApplicationServiceException {
 
-		log.info("Uploaded a file");
+		log.info("Uploaded a file {}", file.getOriginalFilename());
 
 		ApplicationJarResource applicationJarResource = new MultipartFileApplicationJarResourceAdapter(file);
 
-		storageService.store(applicationJarResource);
+		applicationService.create(applicationJarResource);
 
 		redirectAttributes.addFlashAttribute("message",
-				"You successfully uploaded " + file.getOriginalFilename() + "!");
+				"You successfully created application " + applicationJarResource.getApplicationName() + "!");
 
-		return "redirect:/application-upload";
+		return "redirect:/";
 
-	}
-
-	@ExceptionHandler(StorageFileNotFoundException.class)
-	public ResponseEntity<?> handleStorageFileNotFound(StorageFileNotFoundException exc) {
-		return ResponseEntity.notFound().build();
 	}
 
 }
