@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>    
+    <th:block th:replace="fragments/head :: common" />
+    <title>Splat</title>    
+  </head>
+  <body>
+    <th:block th:replace="fragments/header :: common" />
+	
+	<div>
+		<a th:href="@{/application-upload}" class="btn btn-primary">Upload Application</a>
+	</div>
+	
+	<th:block th:replace="fragments/scripts :: common" />
+
+  </body>
+</html>

@@ -1,17 +1,16 @@
-package splat;
+package splat.core;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.stream.Stream;
 
 import org.springframework.core.io.Resource;
-import org.springframework.web.multipart.MultipartFile;
 
-public interface StorageService {
+public interface ApplicationJarStorageService {
 
 	void init() throws IOException;
 
-	void store(MultipartFile file) throws IOException;
+	void store(ApplicationJarResource applicationJarResource) throws IOException;
 
 	Stream<Path> loadAll() throws IOException;
 

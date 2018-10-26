@@ -1,23 +1,19 @@
-package splat;
+package splat.core;
 
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class FilesystemStorageService implements StorageService {
+public class FilesystemStorageService implements ApplicationJarStorageService {
 
 	private Path path;
 
@@ -33,8 +29,9 @@ public class FilesystemStorageService implements StorageService {
 	}
 
 	@Override
-	public void store(MultipartFile file) throws IOException {
-		Files.copy(file.getInputStream(), path.resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
+	public void store(ApplicationJarResource applicationJarResource) throws IOException {
+		Files.copy(applicationJarResource.getInputStream(), path.resolve(applicationJarResource.getApplicationName()),
+				StandardCopyOption.REPLACE_EXISTING);
 	}
 
 	@Override

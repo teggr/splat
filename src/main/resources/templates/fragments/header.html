@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">  
+<body>
+<th:block th:fragment="common">
+	
+    <h1><a th:href="@{/}">Splat</a></h1>
+
+	<form th:action="@{/logout}" method="post">
+		<input type="submit" value="Sign Out" />
+	</form>
+
+	<div th:if="${message}">
+		<h2 th:text="${message}"/>
+	</div>
+	
+</th:block>
+</body>
+</html>

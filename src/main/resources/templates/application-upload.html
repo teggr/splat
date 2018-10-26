@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <th:block th:replace="fragments/head :: common" />
+    <title>Splat</title>
+  </head>
+  <body>
+  	<th:block th:replace="fragments/header :: common" />
+  
+    <div>
+	    <form method="POST" enctype="multipart/form-data" th:action="@{/application-upload}">
+		  <div class="form-group" >
+		    <label for="spring-boot-application-file-picker">Spring Boot Application</label>
+		    <input type="file" class="form-control-file" id="spring-boot-application-file-picker" name="file">
+		  </div>
+		  <button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+	
+	<div>
+		<ul>
+			<li th:each="file : ${files}">
+				<a th:href="${file}" th:text="${file}" />
+			</li>
+		</ul>
+	</div>
+
+	<th:block th:replace="fragments/scripts :: common" />
+    
+  </body>
+</html>

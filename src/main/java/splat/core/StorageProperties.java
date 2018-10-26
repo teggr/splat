@@ -1,4 +1,4 @@
-package splat;
+package splat.core;
 
 import java.nio.file.Path;
 
@@ -7,11 +7,9 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class AccessProperties {
+public class StorageProperties {
 
 	@NotNull
-	private String username;
-	@NotNull
-	private String password;
+	private Path path;
 	
 }

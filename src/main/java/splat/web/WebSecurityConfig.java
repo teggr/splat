@@ -1,4 +1,4 @@
-package splat;
+package splat.web;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -31,11 +31,12 @@ public class WebSecurityConfig {
 			@SuppressWarnings("deprecation")
 			@Override
 			protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-				
-				UserBuilder builder = User.withDefaultPasswordEncoder().username(accessProperties.getUsername()).password(accessProperties.getPassword()).roles("USER");
-				
+
+				UserBuilder builder = User.withDefaultPasswordEncoder().username(accessProperties.getUsername())
+						.password(accessProperties.getPassword()).roles("USER");
+
 				auth.inMemoryAuthentication().withUser(builder);
-				
+
 			}
 		};
 	}

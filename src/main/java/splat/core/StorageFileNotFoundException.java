@@ -1,4 +1,4 @@
-package splat;
+package splat.core;
 
 public class StorageFileNotFoundException extends Exception {
 
