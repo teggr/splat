@@ -13,17 +13,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import splat.core.ApplicationJarResource;
+import splat.core.ApplicationArtifact;
 import splat.core.ApplicationService;
 import splat.core.ApplicationServiceException;
+import splat.core.Platform;
+import splat.core.PlatformException;
 
 @Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/application-upload")
-public class ApplicationUploadController {
+public class ApplicationArtifactUploadController {
 
-	private final ApplicationService applicationService;
+	private final Platform platform;
 
 	@GetMapping
 	public String get(Model model) throws IOException {
@@ -34,16 +36,16 @@ public class ApplicationUploadController {
 
 	@PostMapping
 	public String post(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes)
-			throws ApplicationServiceException {
+			throws PlatformException {
 
 		log.info("Uploaded a file {}", file.getOriginalFilename());
 
-		ApplicationJarResource applicationJarResource = new MultipartFileApplicationJarResourceAdapter(file);
+		ApplicationArtifact applicationArtifact = new MultipartFileArtifactAdapter(file);
 
-		applicationService.create(applicationJarResource);
+		platform.createNew(applicationArtifact);
 
 		redirectAttributes.addFlashAttribute("message",
-				"You successfully created application " + applicationJarResource.getApplicationName() + "!");
+				"You successfully created application " + applicationArtifact.getName() + "!");
 
 		return "redirect:/";
 

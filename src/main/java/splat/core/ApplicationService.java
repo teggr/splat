@@ -4,7 +4,7 @@ import java.util.Set;
 
 public interface ApplicationService {
 
-	void create(ApplicationJarResource applicationJarResource) throws ApplicationServiceException;
+	void create(ApplicationArtifact applicationJarResource) throws ApplicationServiceException;
 
 	Set<Application> findAll();
 

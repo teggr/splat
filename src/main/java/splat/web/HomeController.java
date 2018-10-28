@@ -7,18 +7,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import lombok.RequiredArgsConstructor;
 import splat.core.ApplicationService;
+import splat.core.Platform;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/")
 public class HomeController {
 	
-	private final ApplicationService applicationService; 
+	private final Platform platform; 
 
 	@GetMapping
 	public String get(Model model) {
 		
-		model.addAttribute("applications", applicationService.findAll());
+		model.addAttribute("applications", platform.findAllApplications());
 		
 		return "index";
 	}

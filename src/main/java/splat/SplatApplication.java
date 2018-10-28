@@ -3,12 +3,9 @@ package splat;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import splat.core.ApplicationJarStorageService;
-import splat.core.FilesystemStorageService;
-import splat.core.StorageProperties;
+import splat.core.Platform;
 
 @SpringBootApplication
 public class SplatApplication {
@@ -18,21 +15,9 @@ public class SplatApplication {
 	}
 
 	@Bean
-	@ConfigurationProperties("storage")
-	public StorageProperties storageProperties() {
-		return new StorageProperties();
-	}	
-
-	@Bean
-	public FilesystemStorageService filesystemStorageService(StorageProperties properties) {
-		return new FilesystemStorageService(properties.getPath());
-	}
-
-	@Bean
-	CommandLineRunner init(ApplicationJarStorageService storageService) {
+	CommandLineRunner init(Platform platform) {
 		return (args) -> {
-			storageService.init();
-			storageService.deleteAll();
+			platform.init();
 		};
 	}
 
