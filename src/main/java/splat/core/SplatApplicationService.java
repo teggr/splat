@@ -3,7 +3,6 @@ package splat.core;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -11,7 +10,6 @@ import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +32,7 @@ public class SplatApplicationService implements ApplicationService {
 
 	private static Application toApplication(File f) {
 		String baseName = FilenameUtils.getBaseName(f.getName());
-		return Application.builder().name(baseName).status("Loaded").build();
+		return Application.builder().name(baseName).build();
 	}
 
 	@Override

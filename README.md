@@ -38,8 +38,9 @@ create a spring configuration file
 	mkdir config
 	nano config/application.properties
 
-	# storage
-	storage.path=/tmp/splat/storage
+	# splat platform
+	splat.createHomeDirectory=true
+	splat.homeDirectory=/tmp/splat
 	
 	# access
 	access.username=<a username>

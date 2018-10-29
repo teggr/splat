@@ -2,12 +2,10 @@ package splat.core;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +19,7 @@ public class SplatPlatform implements Platform {
 	private File homeDirectory;
 
 	private ApplicationService applicationService;
+	private RuntimeService runtimeService;
 
 	public SplatPlatform(SplatProperties properties) {
 		this.properties = properties;
@@ -62,6 +61,19 @@ public class SplatPlatform implements Platform {
 			throw new PlatformException("Could not create Splat applications directory", e);
 		}
 
+		try {
+
+			File runtimeDirectory = new File(homeDirectory, "runtime");
+			if (!runtimeDirectory.exists() && !runtimeDirectory.mkdirs()) {
+				throw new IOException(
+						"Could not create runtime directory " + runtimeDirectory + " with parent directorys");
+			}
+			runtimeService = new SplatRuntimeService(runtimeDirectory);
+
+		} catch (IOException e) {
+			throw new PlatformException("Could not create Splat applications directory", e);
+		}
+
 	}
 
 	@Override
@@ -74,8 +86,15 @@ public class SplatPlatform implements Platform {
 	}
 
 	@Override
-	public Set<Application> findAllApplications() {
-		return applicationService.findAll();
+	public Set<PlatformApplication> getAllApplications() {
+
+		return applicationService.findAll().stream().map(this::toPlatformApplication).collect(Collectors.toSet());
+
+	}
+
+	private PlatformApplication toPlatformApplication(Application app) {
+		return PlatformApplication.builder().application(app).container(runtimeService.getContainer(app.getName()))
+				.build();
 	}
 
 }

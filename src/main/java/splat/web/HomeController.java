@@ -19,7 +19,7 @@ public class HomeController {
 	@GetMapping
 	public String get(Model model) {
 		
-		model.addAttribute("applications", platform.findAllApplications());
+		model.addAttribute("applications", platform.getAllApplications());
 		
 		return "index";
 	}
