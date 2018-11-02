@@ -8,6 +8,7 @@ import lombok.Getter;
 public class Application implements Comparable<Application> {
 
 	private final String name;
+	private final ApplicationArtifact artifact;
 
 	@Override
 	public int compareTo(Application o) {

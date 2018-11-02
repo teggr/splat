@@ -70,7 +70,7 @@ public class SplatPlatform implements Platform {
 				throw new IOException(
 						"Could not create runtime directory " + runtimeDirectory + " with parent directorys");
 			}
-			runtimeService = new SplatRuntimeService(runtimeDirectory);
+			runtimeService = new SplatRuntimeService(runtimeDirectory, new ProcessRuntimeScheduler());
 
 		} catch (IOException e) {
 			throw new PlatformException("Could not create Splat applications directory", e);
@@ -81,7 +81,8 @@ public class SplatPlatform implements Platform {
 	@Override
 	public void createNew(ApplicationArtifact applicationArtifact) throws PlatformException {
 		try {
-			applicationService.create(applicationArtifact);
+			Application application = applicationService.create(applicationArtifact);
+			runtimeService.deploy(application);
 		} catch (ApplicationServiceException e) {
 			throw new PlatformException(e);
 		}
@@ -89,9 +90,7 @@ public class SplatPlatform implements Platform {
 
 	@Override
 	public Set<PlatformApplication> getAllApplications() {
-
 		return applicationService.findAll().stream().map(this::toPlatformApplication).collect(Collectors.toSet());
-
 	}
 
 	private PlatformApplication toPlatformApplication(Application app) {

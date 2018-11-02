@@ -26,17 +26,18 @@ public class SplatApplicationService implements ApplicationService {
 
 	@Override
 	public Set<Application> findAll() {
-		File[] listFiles = applicationsDirectory.listFiles((FileFilter)FileFilterUtils.directoryFileFilter());
+		File[] listFiles = applicationsDirectory.listFiles((FileFilter) FileFilterUtils.directoryFileFilter());
 		return Stream.of(listFiles).map(SplatApplicationService::toApplication).collect(Collectors.toSet());
 	}
 
-	private static Application toApplication(File f) {
-		String baseName = FilenameUtils.getBaseName(f.getName());
-		return Application.builder().name(baseName).build();
+	private static Application toApplication(File directory) {
+		String baseName = FilenameUtils.getBaseName(directory.getName());
+		return Application.builder().name(baseName)
+				.artifact(new FileArtifactAdapter(new File(directory, baseName + ".jar"))).build();
 	}
 
 	@Override
-	public void create(ApplicationArtifact applicationArtifact) throws ApplicationServiceException {
+	public Application create(ApplicationArtifact applicationArtifact) throws ApplicationServiceException {
 
 		try {
 
@@ -53,6 +54,8 @@ public class SplatApplicationService implements ApplicationService {
 			File artifactFile = new File(applicationFolder, name);
 
 			FileUtils.copyInputStreamToFile(applicationArtifact.getInputStream(), artifactFile);
+
+			return Application.builder().name(baseName).artifact(new FileArtifactAdapter(artifactFile)).build();
 
 		} catch (IOException e) {
 			log.error("{}", e.getMessage(), e);
