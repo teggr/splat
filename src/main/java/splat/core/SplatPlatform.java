@@ -32,12 +32,14 @@ public class SplatPlatform implements Platform {
 		try {
 
 			homeDirectory = properties.getHomeDirectory();
+			if (homeDirectory == null) {
+				homeDirectory = new File(System.getProperty("user.home"), "/.splat");
+			}
 
-			if (properties.isCreateHomeDirectory()) {
-				if (!homeDirectory.exists() && !homeDirectory.mkdirs()) {
-					throw new IOException(
-							"Could not create home directory " + homeDirectory + " with parent directorys");
-				}
+			log.info("Using home directory {}", homeDirectory);
+
+			if (!homeDirectory.exists() && !homeDirectory.mkdirs()) {
+				throw new IOException("Could not create home directory " + homeDirectory + " with parent directorys");
 			}
 
 			if (!homeDirectory.exists()) {

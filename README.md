@@ -38,9 +38,8 @@ create a spring configuration file
 	mkdir config
 	nano config/application.properties
 
-	# splat platform
-	splat.createHomeDirectory=true
-	splat.homeDirectory=/tmp/splat
+	# splat platform	
+	# splat.home-directory= uncomment to change. defaults to ${user.home}/.splat
 	
 	# access
 	access.username=<a username>
@@ -49,4 +48,4 @@ create a spring configuration file
 # upload application
 
 	go to index.html
-	upload the file. note will clear out with each restart
+	upload the a spring boot jar

@@ -12,7 +12,6 @@ import lombok.Data;
 @ConfigurationProperties("splat")
 public class SplatProperties {
 
-	private boolean createHomeDirectory;
 	private File homeDirectory;
 
 }
