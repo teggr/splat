@@ -39,5 +39,33 @@ public class HomeController {
 		return "redirect:/";
 
 	}
+	
+	@PostMapping(params = "restart")
+	public String restart(@RequestParam("appName") String appName, RedirectAttributes redirectAttributes) {
+
+		try {
+			platform.restart(appName);
+			redirectAttributes.addFlashAttribute("message", "You restarted the application " + appName + "!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("message", "The application " + appName + " couldn't be restarted!");
+		}
+
+		return "redirect:/";
+
+	}
+	
+	@PostMapping(params = "stop")
+	public String stop(@RequestParam("appName") String appName, RedirectAttributes redirectAttributes) {
+
+		try {
+			platform.stop(appName);
+			redirectAttributes.addFlashAttribute("message", "You stopped the application " + appName + "!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("message", "The application " + appName + " couldn't be stopped!");
+		}
+
+		return "redirect:/";
+
+	}
 
 }

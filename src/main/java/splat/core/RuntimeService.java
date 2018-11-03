@@ -12,4 +12,8 @@ public interface RuntimeService {
 
 	void delete(String appName);
 
+	void restart(Application application);
+
+	void stop(Application find);
+
 }

@@ -17,4 +17,8 @@ public interface Platform {
 
 	void delete(String appName) throws PlatformException;
 
+	void restart(String appName) throws PlatformException;
+
+	void stop(String appName) throws PlatformException;
+
 }

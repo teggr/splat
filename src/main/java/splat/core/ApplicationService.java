@@ -13,4 +13,6 @@ public interface ApplicationService {
 
 	void delete(String appName) throws ApplicationServiceException;
 
+	Application find(String appName) throws ApplicationServiceException;
+
 }

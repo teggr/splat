@@ -77,6 +77,12 @@
 			<version>2.5</version>
 		</dependency>
 
+		<!-- utils -->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+
 	</dependencies>
 
 	<build>

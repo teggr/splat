@@ -6,7 +6,7 @@ Simple platform-as-a-service for Spring Boot deployments
 
     mvn clean install
 
-Server jar available in target/splat-web-{version}.jar
+Server jar available in target/splat-web.jar
 
 # deploy server jar to Digital Ocean
 

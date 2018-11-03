@@ -25,7 +25,11 @@ public class WebSecurityConfig {
 		return new WebSecurityConfigurerAdapter() {
 			@Override
 			protected void configure(HttpSecurity http) throws Exception {
+
 				http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().logout().permitAll();
+
+				// http.requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests().anyRequest().permitAll();
+
 			}
 
 			@SuppressWarnings("deprecation")

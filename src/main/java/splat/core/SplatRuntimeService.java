@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import splat.core.ApplicationContainer.ContainerState;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,7 +35,7 @@ public class SplatRuntimeService implements RuntimeService {
 		if (containersByName.containsKey(name)) {
 			return containersByName.get(name);
 		} else {
-			return ApplicationContainer.builder().name(name).status("Unknown").build();
+			return ApplicationContainer.builder().name(name).status(ContainerState.UNKNOWN).build();
 		}
 
 	}
@@ -53,17 +54,54 @@ public class SplatRuntimeService implements RuntimeService {
 			}
 		});
 	}
-	
+
 	@Override
 	public void delete(String appName) {
-		
+
 		try {
 			File applicationFolder = new File(runtimeDirectory, appName);
 			FileUtils.deleteDirectory(applicationFolder);
 		} catch (IOException e) {
 			log.error("{}", e.getMessage(), e);
 		}
-		
+
+	}
+
+	@Override
+	public void restart(Application application) {
+		runtimeScheduler.restartApplication(application, runtimeDirectory, new ApplicationContainerCallback() {
+
+			@Override
+			public void started(ApplicationContainer container) {
+				containersByName.put(container.getName(), container);
+			}
+
+			@Override
+			public void failed(ApplicationContainer container) {
+				containersByName.put(container.getName(), container);
+			}
+		});
+	}
+
+	@Override
+	public void stop(Application find) {
+		ApplicationContainer container = getContainer(find.getName());
+		if (container != null) {
+			if (container.isAlive()) {
+				try {
+					int waitFor = container.getProcess().destroyForcibly().waitFor();
+					log.info("Stopped application {} with exit code {}", find.getName(), waitFor);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+				ApplicationContainer applicationContainer = ApplicationContainer.builder().name(find.getName())
+						.status(ContainerState.STOPPED).build();
+				containersByName.put(find.getName(), applicationContainer);
+
+			}
+		}
+
 	}
 
 }

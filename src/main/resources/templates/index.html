@@ -10,12 +10,15 @@
     
     <div class="container">
 	    <h2>Applications</h2>
-	    <th:block th:if="applications.empty">
+	    <th:block th:unless="${applications.empty}">
 		    <table class="table">
 		    	<thead>
 		    		<tr>
 		    			<th>Name</th>
 		    			<th>Status</th>
+		    			<th>Alive</th>
+		    			<th></th>
+		    			<th></th>
 		    			<th></th>
 		    		</tr>	    
 		    	</thead>
@@ -23,17 +26,39 @@
 		    		<tr th:each="app : ${applications}">
 		    			<td th:text="${app.name}"></td>
 		    			<td th:text="${app.status}"></td>
+		    			<th:block>
+			    			<td th:if="${app.alive}">Y</td>
+			    			<td th:unless="${app.alive}">N</td>
+		    			</th:block>
 		    			<td>
-		    				<form th:action="@{/}" method="post">
-		    					<input type="hidden" name="appName" th:value="${app.name}" />
-		    					<button type="submit" name="delete" class="btn btn-danger">Delete</button>
-		    				</form>
+		    				<th:block th:if="${app.restartable}">
+			    				<form th:action="@{/}" method="post">
+			    					<input type="hidden" name="appName" th:value="${app.name}" />
+			    					<button type="submit" name="restart" class="btn btn-default">Restart</button>
+			    				</form>
+		    				</th:block>
+		    			</td>
+		    			<td>
+		    				<th:block th:if="${app.stoppable}">
+			    				<form th:action="@{/}" method="post">
+			    					<input type="hidden" name="appName" th:value="${app.name}" />
+			    					<button type="submit" name="stop" class="btn btn-warning">Stop</button>
+			    				</form>
+		    				</th:block>
+		    			</td>
+		    			<td>
+		    				<th:block th:if="${app.deletable}">
+			    				<form th:action="@{/}" method="post">
+			    					<input type="hidden" name="appName" th:value="${app.name}" />
+			    					<button type="submit" name="delete" class="btn btn-danger">Delete</button>
+			    				</form>
+		    				</th:block>
 		    			</td>
 		    		</tr>
 		    	</tbody>
 		    </table>
 	    </th:block>
-	    <th:block th:else="">
+	    <th:block th:if="${applications.empty}">
 	    	<p>You've not deployed any applications yet. You can start by uploading an application below</p>
 	    </th:block>
 		

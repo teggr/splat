@@ -62,6 +62,25 @@ public class SplatPlatform implements Platform {
 			throw new PlatformException(e);
 		}
 	}
+	
+	@Override
+	public void restart(String appName) throws PlatformException {
+		try {
+			runtimeService.restart(applicationService.find(appName));
+		} catch (ApplicationServiceException e) {
+			throw new PlatformException(e);
+		}
+		
+	}
+	
+	@Override
+	public void stop(String appName) throws PlatformException {
+		try {
+			runtimeService.stop(applicationService.find(appName));
+		} catch (ApplicationServiceException e) {
+			throw new PlatformException(e);
+		}
+	}
 
 	@Override
 	public Set<PlatformApplication> getAllApplications() {

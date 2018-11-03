@@ -40,6 +40,11 @@ public class SplatApplicationService implements ApplicationService {
 		return Stream.of(listFiles).map(SplatApplicationService::toApplication).collect(Collectors.toSet());
 	}
 
+	@Override
+	public Application find(String appName) throws ApplicationServiceException {
+		return findAll().stream().filter(f -> f.getName().equals(appName)).findFirst().get();
+	}
+
 	private static Application toApplication(File directory) {
 		String baseName = FilenameUtils.getBaseName(directory.getName());
 		return Application.builder().name(baseName)
