@@ -89,12 +89,12 @@ public class SplatRuntimeService implements RuntimeService {
 		if (container != null) {
 			if (container.isAlive()) {
 				try {
-					int waitFor = container.getProcess().destroyForcibly().waitFor();
-					log.info("Stopped application {} with exit code {}", find.getName(), waitFor);
-				} catch (InterruptedException e) {
+					container.getProcess().destroyForcefully().waitFor();
+					log.info("Stopped application {}", find.getName());
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
-
+				
 				ApplicationContainer applicationContainer = ApplicationContainer.builder().name(find.getName())
 						.status(ContainerState.STOPPED).build();
 				containersByName.put(find.getName(), applicationContainer);

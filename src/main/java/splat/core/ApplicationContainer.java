@@ -2,6 +2,9 @@ package splat.core;
 
 import lombok.Builder;
 import lombok.Getter;
+
+import org.zeroturnaround.process.SystemProcess;
+
 import lombok.AccessLevel;
 
 @Builder
@@ -15,14 +18,18 @@ public class ApplicationContainer {
 	private final String name;
 	@Getter(AccessLevel.NONE)
 	private final ContainerState status;
-	private final Process process;
+	private final SystemProcess process;
 	
 	public String getStatus() {
 		return status.toString();
 	}
 	
 	public boolean isAlive() {
-		return process != null && process.isAlive();
+		try {
+			return process != null && process.isAlive();			
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public boolean isRestartable() {

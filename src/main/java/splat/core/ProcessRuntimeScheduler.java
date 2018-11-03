@@ -1,12 +1,19 @@
 package splat.core;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Properties;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.logging.log4j.util.ProcessIdUtil;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
+import org.zeroturnaround.process.JavaProcess;
+import org.zeroturnaround.process.PidProcess;
+import org.zeroturnaround.process.Processes;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -79,25 +86,8 @@ public class ProcessRuntimeScheduler implements RuntimeScheduler {
 				applicationContainerCallback.failed(builder.status(ContainerState.DEPLOY_FAILED).build());
 				throw new RuntimeException(msg);
 			}
-
-			File configDirectory = new File(containerDirectory, "configuration");
-			if (!configDirectory.exists() && !configDirectory.mkdirs()) {
-				String msg = "Could not create runtime configuration directory " + configDirectory;
-				log.error(msg);
-				applicationContainerCallback.failed(builder.status(ContainerState.DEPLOY_FAILED).build());
-				throw new RuntimeException(msg);
-			}
-
-			File applicationProperties = new File(configDirectory, "applicationProperties");
-			try {
-				if (!applicationProperties.exists() && !applicationProperties.createNewFile()) {
-					throw new RuntimeException("Could not create application properties " + applicationProperties);
-				}
-			} catch (Exception e) {
-				String msg = "Could not create runtime configuration properties " + applicationProperties;
-				log.error(msg);
-				applicationContainerCallback.failed(builder.status(ContainerState.DEPLOY_FAILED).build());
-			}
+			
+			log.info("Created application container directory {}", containerDirectory);
 
 			File runtimeArtifact = new File(containerDirectory, application.getArtifact().getName());
 			try {
@@ -107,6 +97,32 @@ public class ProcessRuntimeScheduler implements RuntimeScheduler {
 				log.error(msg);
 				applicationContainerCallback.failed(builder.status(ContainerState.DEPLOY_FAILED).build());
 				throw new RuntimeException(msg);
+			}
+
+			File configDirectory = new File(containerDirectory, "config");
+			if (!configDirectory.exists() && !configDirectory.mkdirs()) {
+				String msg = "Could not create runtime configuration directory " + configDirectory;
+				log.error(msg);
+				applicationContainerCallback.failed(builder.status(ContainerState.DEPLOY_FAILED).build());
+				throw new RuntimeException(msg);
+			}
+
+			File applicationProperties = new File(configDirectory, "application.properties");
+			try {
+				if (!applicationProperties.exists() && !applicationProperties.createNewFile()) {
+					throw new RuntimeException("Could not create application properties " + applicationProperties);
+				}
+				Properties properties = new Properties();
+				properties.setProperty("server.port", "8081");
+				properties.setProperty("logging.path", containerDirectory.getAbsolutePath());
+				try (FileWriter writer = new FileWriter(applicationProperties)) {
+					properties.store(writer, "Splat Properties for " + application.getName());
+				}
+
+			} catch (Exception e) {
+				String msg = "Could not create runtime configuration properties " + applicationProperties;
+				log.error(msg);
+				applicationContainerCallback.failed(builder.status(ContainerState.DEPLOY_FAILED).build());
 			}
 
 			log.info("Finished creating application container {}", application.getName());
@@ -122,23 +138,20 @@ public class ProcessRuntimeScheduler implements RuntimeScheduler {
 
 		String[] execCommand = new String[] { "-jar", application.getArtifact().getName() };
 
-		// String[] osCommand = new String[] { "CMD", "/C" };
-
-		// String[] commands = ArrayUtils.addAll(osCommand, execCommand);
-
 		log.info("Starting application {}", execCommand);
 
 		try {
-			// ProcessBuilder processBuilder = new
-			// ProcessBuilder(execCommand).directory(containerDirectory).inheritIO();
-			
-			ProcessBuilder processBuilder = new JavaExecutable().processBuilder(execCommand).directory(containerDirectory);
 
-			// ProcessBuilder processBuilder = new ProcessBuilder(commands).directory(containerDirectory);
+			ProcessBuilder processBuilder = new JavaExecutable().processBuilder(execCommand)
+					.directory(containerDirectory);
 
-			Process process = processBuilder.start();
+			PidProcess pidProcess = Processes.newPidProcess(processBuilder.start());
 
-			applicationContainerCallback.started(builder.status(ContainerState.RUNNING).process(process).build());
+			// create a pid file?
+			File pidFile = new File(containerDirectory, application.getName() + ".pid");
+			FileUtils.writeStringToFile(pidFile, String.valueOf(pidProcess.getPid()), Charset.defaultCharset());
+
+			applicationContainerCallback.started(builder.status(ContainerState.RUNNING).process(pidProcess).build());
 
 		} catch (Exception e) {
 			String msg = "Could not start application container " + execCommand;
