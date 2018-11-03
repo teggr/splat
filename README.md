@@ -47,6 +47,9 @@ create a spring configuration file
 	# access
 	access.username=<a username>
 	access.password=<a strong password> # see https://passwordsgenerator.net/
+	
+	# logging
+	logging.path=/home/splat/.splat/logs
 
 # monitor init.d / SystemV service
 
@@ -61,9 +64,11 @@ Create the systemd service script
 	After=syslog.target
 	
 	[Service]
-	User=splat
+	User=splat	
+	Environment="JAVA_OPTS=-Djava.security.egd=file:/dev/./urandom"	
 	ExecStart=/home/splat/splat-runtime/splat-web.jar
 	SuccessExitStatus=143
+	
 	
 	[Install]
 	WantedBy=multi-user.target
