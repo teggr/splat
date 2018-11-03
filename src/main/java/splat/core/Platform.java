@@ -15,4 +15,6 @@ public interface Platform {
 
 	Set<PlatformApplication> getAllApplications();
 
+	void delete(String appName) throws PlatformException;
+
 }

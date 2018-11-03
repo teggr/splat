@@ -11,4 +11,6 @@ public interface ApplicationService {
 
 	void init() throws IOException;
 
+	void delete(String appName) throws ApplicationServiceException;
+
 }

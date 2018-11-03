@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">  
+<body>
+<th:block th:fragment="common">
+
+	<div class="container">		
+		<div th:if="${message}">
+			<div class="alert alert-info" role="alert" th:text="${message}"></div>
+		</div>
+	</div>
+	
+</th:block>
+</body>
+</html>

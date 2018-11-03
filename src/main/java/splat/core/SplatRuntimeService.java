@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,18 @@ public class SplatRuntimeService implements RuntimeService {
 				containersByName.put(container.getName(), container);
 			}
 		});
+	}
+	
+	@Override
+	public void delete(String appName) {
+		
+		try {
+			File applicationFolder = new File(runtimeDirectory, appName);
+			FileUtils.deleteDirectory(applicationFolder);
+		} catch (IOException e) {
+			log.error("{}", e.getMessage(), e);
+		}
+		
 	}
 
 }

@@ -1,8 +1,6 @@
 package splat.core;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -50,6 +48,16 @@ public class SplatPlatform implements Platform {
 		try {
 			Application application = applicationService.create(applicationArtifact);
 			runtimeService.deploy(application);
+		} catch (ApplicationServiceException e) {
+			throw new PlatformException(e);
+		}
+	}
+
+	@Override
+	public void delete(String appName) throws PlatformException {
+		try {
+			runtimeService.delete(appName);
+			applicationService.delete(appName);
 		} catch (ApplicationServiceException e) {
 			throw new PlatformException(e);
 		}

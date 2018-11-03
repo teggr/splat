@@ -10,4 +10,6 @@ public interface RuntimeService {
 
 	void init() throws IOException;
 
+	void delete(String appName);
+
 }

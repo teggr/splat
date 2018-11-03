@@ -74,4 +74,17 @@ public class SplatApplicationService implements ApplicationService {
 
 	}
 
+	@Override
+	public void delete(String appName) throws ApplicationServiceException {
+
+		try {
+			File applicationFolder = new File(applicationsDirectory, appName);
+			FileUtils.deleteDirectory(applicationFolder);
+		} catch (IOException e) {
+			log.error("{}", e.getMessage(), e);
+			throw new ApplicationServiceException(e);
+		}
+
+	}
+
 }
