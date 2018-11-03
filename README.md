@@ -26,9 +26,12 @@ Server jar available in target/splat-web-{version}.jar
     1. keep hold of your password and ssh key
 14. install java (default-jdk) (https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04)
 15. make directory ~/splat-runtime
-16. upload the jar to this directory
-17. run the jar - java -jar splat-web-{version}.jar (see configuration section first!!)
-18. use a tunnel to access the web application (mobaxterm/ssh)
+16. upload the splat-web.jar to this directory
+17. make directory ~/splat-runtime/config
+18. Create a application.properties file in the config directory. See below for details.
+19. Create a SystemD service. See below for details.
+20. Start the service running.
+21. use a tunnel to access the web application (mobaxterm/ssh)
 
 # set configuration
 
@@ -45,7 +48,32 @@ create a spring configuration file
 	access.username=<a username>
 	access.password=<a strong password> # see https://passwordsgenerator.net/
 
+# monitor init.d / SystemV service
+
+See https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html#deployment-systemd-service
+
+Create the systemd service script
+
+	sudo vi /etc/systemd/system/splat-web.service
+
+	[Unit]
+	Description=splat-web
+	After=syslog.target
+	
+	[Service]
+	User=splat
+	ExecStart=/home/splat/splat-runtime/splat-web.jar
+	SuccessExitStatus=143
+	
+	[Install]
+	WantedBy=multi-user.target
+
+	sudo service splat-web [start|restart|stop]
+	
+	sudo journalctl -u splat
+	
 # upload application
 
 	go to index.html
+	log in
 	upload the a spring boot jar
