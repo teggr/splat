@@ -3,7 +3,6 @@ package splat.core;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -11,17 +10,28 @@ import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
+import org.springframework.stereotype.Component;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
+@Component
 public class SplatApplicationService implements ApplicationService {
 
-	private final File applicationsDirectory;
+	@NonNull
+	private final SplatEnvironment environment;
+	private File applicationsDirectory;
 
-	public SplatApplicationService(File applicationsDirectory) {
-		Objects.requireNonNull(applicationsDirectory);
-		this.applicationsDirectory = applicationsDirectory;
+	@Override
+	public void init() throws IOException {
+		applicationsDirectory = new File(environment.getHomeDirectory(), "applications");
+		if (!applicationsDirectory.exists() && !applicationsDirectory.mkdirs()) {
+			throw new IOException(
+					"Could not create applications directory " + applicationsDirectory + " with parent directorys");
+		}
 	}
 
 	@Override

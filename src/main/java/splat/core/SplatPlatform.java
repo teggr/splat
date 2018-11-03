@@ -8,72 +8,39 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@RequiredArgsConstructor
 @Component
 public class SplatPlatform implements Platform {
 
-	private final SplatProperties properties;
-
-	private File homeDirectory;
-
-	private ApplicationService applicationService;
-	private RuntimeService runtimeService;
-
-	public SplatPlatform(SplatProperties properties) {
-		this.properties = properties;
-		Objects.requireNonNull(properties, "Splat platform requires properties for configuration");
-	}
+	@NonNull
+	private final SplatEnvironment environment;
+	@NonNull
+	private final ApplicationService applicationService;
+	@NonNull
+	private final RuntimeService runtimeService;
 
 	@Override
 	public void init() throws PlatformException {
 
 		try {
 
-			homeDirectory = properties.getHomeDirectory();
-			if (homeDirectory == null) {
-				homeDirectory = new File(System.getProperty("user.home"), "/.splat");
-			}
-
-			log.info("Using home directory {}", homeDirectory);
-
-			if (!homeDirectory.exists() && !homeDirectory.mkdirs()) {
-				throw new IOException("Could not create home directory " + homeDirectory + " with parent directorys");
-			}
-
-			if (!homeDirectory.exists()) {
-				throw new IOException("Home directory " + homeDirectory + " does not exist");
-			}
+			environment.init();
 
 		} catch (IOException e) {
-			throw new PlatformException("Could not create Splat home directory", e);
+			throw new PlatformException("Could not initialise environment", e);
 		}
 
 		try {
-
-			File applicationsDirectory = new File(homeDirectory, "applications");
-			if (!applicationsDirectory.exists() && !applicationsDirectory.mkdirs()) {
-				throw new IOException(
-						"Could not create applications directory " + applicationsDirectory + " with parent directorys");
-			}
-			applicationService = new SplatApplicationService(applicationsDirectory);
-
+			// initialise services
+			applicationService.init();
+			runtimeService.init();
 		} catch (IOException e) {
-			throw new PlatformException("Could not create Splat applications directory", e);
-		}
-
-		try {
-
-			File runtimeDirectory = new File(homeDirectory, "runtime");
-			if (!runtimeDirectory.exists() && !runtimeDirectory.mkdirs()) {
-				throw new IOException(
-						"Could not create runtime directory " + runtimeDirectory + " with parent directorys");
-			}
-			runtimeService = new SplatRuntimeService(runtimeDirectory, new ProcessRuntimeScheduler());
-
-		} catch (IOException e) {
-			throw new PlatformException("Could not create Splat applications directory", e);
+			throw new PlatformException("Could not initialise services", e);
 		}
 
 	}
