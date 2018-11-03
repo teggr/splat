@@ -37,7 +37,7 @@ public class ApplicationContainer {
 	}
 
 	public boolean isDeletable() {
-		return true;
+		return !isAlive();
 	}
 
 	public boolean isStoppable() {
