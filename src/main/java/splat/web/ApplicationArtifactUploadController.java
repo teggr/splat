@@ -14,8 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import splat.core.ApplicationArtifact;
-import splat.core.ApplicationService;
-import splat.core.ApplicationServiceException;
 import splat.core.Platform;
 import splat.core.PlatformException;
 
@@ -27,6 +25,8 @@ public class ApplicationArtifactUploadController {
 
 	private final Platform platform;
 
+	private final TemporaryUploadStore uploadStore;
+
 	@GetMapping
 	public String get(Model model) throws IOException {
 
@@ -36,16 +36,23 @@ public class ApplicationArtifactUploadController {
 
 	@PostMapping
 	public String post(@RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes)
-			throws PlatformException {
+			throws PlatformException, IOException {
 
 		log.info("Uploaded a file {}", file.getOriginalFilename());
 
-		ApplicationArtifact applicationArtifact = new MultipartFileArtifactAdapter(file);
+		TemporaryUploadedFile uploadedFile = uploadStore.save(file);
+
+		log.info("File uploaded {}", uploadedFile.getName());
+
+		ApplicationArtifact applicationArtifact = new UploadedFileArtifactAdapter(uploadedFile);
 
 		platform.createNew(applicationArtifact);
 
+		redirectAttributes.addFlashAttribute("refresh", 5);
 		redirectAttributes.addFlashAttribute("message",
 				"You successfully created application " + applicationArtifact.getName() + "!");
+
+		log.info("Redirecting back to home");
 
 		return "redirect:/";
 

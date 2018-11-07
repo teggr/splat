@@ -10,10 +10,11 @@
   
   	<div class="container">
   
+  		<h1>Upload your Spring Boot Application</h1>
 	    <div>
 		    <form method="POST" enctype="multipart/form-data" th:action="@{/application-upload}">
 			  <div class="form-group" >
-			    <label for="spring-boot-application-file-picker">Spring Boot Application</label>
+			    <label for="spring-boot-application-file-picker">Browse for a jar file</label>
 			    <input type="file" class="form-control-file" id="spring-boot-application-file-picker" name="file">
 			  </div>
 			  <button type="submit" class="btn btn-primary">Submit</button>

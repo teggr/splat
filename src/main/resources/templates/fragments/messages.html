@@ -7,6 +7,9 @@
 		<div th:if="${message}">
 			<div class="alert alert-info" role="alert" th:text="${message}"></div>
 		</div>
+		<div th:if="${refresh}">
+			<div class="alert alert-info" role="alert" th:text="${'Application is making changes for you. This page will refresh in ' + refresh + ' seconds'}"></div>
+		</div>
 	</div>
 	
 </th:block>

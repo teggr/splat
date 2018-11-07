@@ -3,24 +3,22 @@ package splat.web;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import lombok.RequiredArgsConstructor;
 import splat.core.ApplicationArtifact;
 
 @RequiredArgsConstructor
-public class MultipartFileArtifactAdapter implements ApplicationArtifact {
+public class UploadedFileArtifactAdapter implements ApplicationArtifact {
 
-	private final MultipartFile file;
+	private final TemporaryUploadedFile tmpFile;
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return file.getInputStream();
+		return tmpFile.getInputStream();
 	}
 
 	@Override
 	public String getName() {
-		return file.getOriginalFilename();
+		return tmpFile.getName();
 	}
 
 }
