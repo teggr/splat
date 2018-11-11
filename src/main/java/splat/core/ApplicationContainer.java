@@ -1,17 +1,18 @@
 package splat.core;
 
-import lombok.Builder;
-import lombok.Getter;
+import java.util.Properties;
 
 import org.zeroturnaround.process.SystemProcess;
 
 import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
 
 @Builder
 @Getter
 public class ApplicationContainer {
-	
-	enum ContainerState {
+
+	public enum ContainerState {
 		UNKNOWN, DEPLOY_FAILED, RUN_FAILED, RUNNING, STOPPED;
 	}
 
@@ -19,14 +20,15 @@ public class ApplicationContainer {
 	@Getter(AccessLevel.NONE)
 	private final ContainerState status;
 	private final SystemProcess process;
-	
+	private final Properties properties;
+
 	public String getStatus() {
 		return status.toString();
 	}
-	
+
 	public boolean isAlive() {
 		try {
-			return process != null && process.isAlive();			
+			return process != null && process.isAlive();
 		} catch (Exception e) {
 			return false;
 		}
@@ -47,5 +49,5 @@ public class ApplicationContainer {
 	public static ApplicationContainer empty() {
 		return ApplicationContainer.builder().status(ContainerState.UNKNOWN).build();
 	}
-	
+
 }

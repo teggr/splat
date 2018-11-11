@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import splat.core.Application;
 import splat.core.ApplicationConfiguration;
 import splat.core.ApplicationConfigurationRepository;
 

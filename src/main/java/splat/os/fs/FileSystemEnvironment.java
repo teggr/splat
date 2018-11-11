@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-class FileSystemEnvironment implements InitializingBean {
+public class FileSystemEnvironment implements InitializingBean {
 
 	@NonNull
 	private final FileSystemProperties properties;

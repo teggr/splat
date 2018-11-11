@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import splat.core.ApplicationContainer.ContainerState;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,7 +17,7 @@ public class SplatApplicationService implements ApplicationService {
 	@NonNull
 	private final ApplicationConfigurationRepository repository;
 	@NonNull
-	private final RuntimeService runtimeService;
+	private final ApplicationContainerService containers;
 
 	@Override
 	public Application createFromArtifact(ApplicationArtifact applicationArtifact) throws ApplicationServiceException {
@@ -33,7 +32,7 @@ public class SplatApplicationService implements ApplicationService {
 			ApplicationConfiguration configuration = ApplicationConfiguration.builder().applicationId(applicationId)
 					.name(applicationArtifact.getName()).artifact(applicationArtifact).build();
 
-			return builderApplication(repository.save(configuration));
+			return toApplication(repository.save(configuration), containers.start(configuration));
 
 		} catch (Exception e) {
 			throw new ApplicationServiceException("Could not create a new application", e);
@@ -43,7 +42,8 @@ public class SplatApplicationService implements ApplicationService {
 	@Override
 	public void delete(String applicationId) throws ApplicationServiceException {
 		try {
-			// runtimeService.delete(appName);
+			containers.stop(applicationId);
+			containers.delete(applicationId);
 			repository.remove(applicationId);
 		} catch (Exception e) {
 			throw new ApplicationServiceException("Could not delete application " + applicationId, e);
@@ -54,8 +54,7 @@ public class SplatApplicationService implements ApplicationService {
 	public Application restart(String applicationId) throws ApplicationServiceException {
 		try {
 			ApplicationConfiguration configuration = repository.find(applicationId);
-			// runtimeService.restart(application);
-			return builderApplication(configuration);
+			return toApplication(configuration, containers.restart(applicationId));
 		} catch (Exception e) {
 			throw new ApplicationServiceException("Could not restart application " + applicationId, e);
 		}
@@ -66,7 +65,7 @@ public class SplatApplicationService implements ApplicationService {
 	public Application stop(String applicationId) throws ApplicationServiceException {
 		try {
 			ApplicationConfiguration configuration = repository.find(applicationId);
-			return builderApplication(configuration);
+			return toApplication(configuration, containers.stop(applicationId));
 		} catch (Exception e) {
 			throw new ApplicationServiceException("Could not stop application " + applicationId, e);
 		}
@@ -74,11 +73,15 @@ public class SplatApplicationService implements ApplicationService {
 
 	@Override
 	public Set<Application> getAllApplications() {
-		return repository.findAll().map(this::builderApplication).collect(Collectors.toSet());
+		return repository.findAll().map(this::toApplication).collect(Collectors.toSet());
 	}
 
-	private Application builderApplication(ApplicationConfiguration configuration) {
-		return new Application(configuration, ApplicationContainer.empty());
+	private Application toApplication(ApplicationConfiguration configuration) {
+		return toApplication(configuration, containers.get(configuration.getApplicationId()));
+	}
+
+	private Application toApplication(ApplicationConfiguration configuration, ApplicationContainer container) {
+		return new Application(configuration, container);
 	}
 
 }
