@@ -17,8 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import splat.core.ApplicationArtifact;
 import splat.core.Platform;
 import splat.core.PlatformException;
-import splat.core.TemporaryResource;
-import splat.core.TemporaryUploadStore;
+import splat.core.TemporaryArtifactStore;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class ApplicationArtifactUploadController {
 
 	private final Platform platform;
 
-	private final TemporaryUploadStore uploadStore;
+	private final TemporaryArtifactStore uploadStore;
 
 	@GetMapping
 	public String get(Model model) throws IOException {
@@ -41,13 +40,11 @@ public class ApplicationArtifactUploadController {
 
 		log.info("Uploaded a file {}", file.getOriginalFilename());
 
-		TemporaryResource temporaryResource = uploadStore.save(file);
+		ApplicationArtifact applicationArtifact = uploadStore.save(file);
+		
+		log.info("Created Temporary {} artifact {}", applicationArtifact.getType(), applicationArtifact.getName());
 
-		log.info("Temporary resource created for upload {}", temporaryResource.getName());
-
-		ApplicationArtifact applicationArtifact = new TemporaryResourceApplicationArtifactAdapter(temporaryResource);
-
-		platform.createNew(applicationArtifact);
+		platform.createNewApplicationFromArtifact(applicationArtifact);
 
 		redirectAttributes.addFlashAttribute("refresh", 5);
 		redirectAttributes.addFlashAttribute("message",

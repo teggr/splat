@@ -22,7 +22,11 @@ public class HomeController {
 
 	@GetMapping
 	public String get(Model model) {
-		model.addAttribute("applications", platform.getAllApplications());
+		try {
+			model.addAttribute("applications", platform.getAllApplications());
+		} catch (PlatformException e) {
+			model.addAttribute("message", e.getMessage());
+		}
 		return "index";
 	}
 

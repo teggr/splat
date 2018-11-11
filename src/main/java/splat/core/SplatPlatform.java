@@ -1,6 +1,5 @@
 package splat.core;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,46 +8,25 @@ import org.springframework.stereotype.Component;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import splat.core.ApplicationContainer.ContainerState;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class SplatPlatform implements Platform {
-
+	
 	@NonNull
-	private final SplatEnvironment environment;
-	@NonNull
-	private final ApplicationService applicationService;
+	private final ApplicationRepository repository;
 	@NonNull
 	private final RuntimeService runtimeService;
 
 	@Override
-	public void init() throws PlatformException {
-
+	public void createNewApplicationFromArtifact(ApplicationArtifact applicationArtifact) throws PlatformException {
 		try {
-
-			environment.init();
-
-		} catch (IOException e) {
-			throw new PlatformException("Could not initialise environment", e);
-		}
-
-		try {
-			// initialise services
-			applicationService.init();
-			runtimeService.init();
-		} catch (IOException e) {
-			throw new PlatformException("Could not initialise services", e);
-		}
-
-	}
-
-	@Override
-	public void createNew(ApplicationArtifact applicationArtifact) throws PlatformException {
-		try {
-			Application application = applicationService.create(applicationArtifact);
-			runtimeService.deploy(application);
-		} catch (ApplicationServiceException e) {
+			Application application = Application.builder().name(applicationArtifact.getName()).artifact(applicationArtifact).build();
+			Application createdApplication = repository.save(application);
+			runtimeService.deploy(createdApplication);
+		} catch (Exception e) {
 			throw new PlatformException(e);
 		}
 	}
@@ -56,9 +34,9 @@ public class SplatPlatform implements Platform {
 	@Override
 	public void delete(String appName) throws PlatformException {
 		try {
-			runtimeService.delete(appName);
-			applicationService.delete(appName);
-		} catch (ApplicationServiceException e) {
+		//	runtimeService.delete(appName);
+			repository.removeByName(appName);
+		} catch (Exception e) {
 			throw new PlatformException(e);
 		}
 	}
@@ -66,8 +44,9 @@ public class SplatPlatform implements Platform {
 	@Override
 	public void restart(String appName) throws PlatformException {
 		try {
-			runtimeService.restart(applicationService.find(appName));
-		} catch (ApplicationServiceException e) {
+			Application application = repository.findByName(appName);
+		//	runtimeService.restart(application);
+		} catch (Exception e) {
 			throw new PlatformException(e);
 		}
 		
@@ -76,19 +55,21 @@ public class SplatPlatform implements Platform {
 	@Override
 	public void stop(String appName) throws PlatformException {
 		try {
-			runtimeService.stop(applicationService.find(appName));
-		} catch (ApplicationServiceException e) {
+			Application application = repository.findByName(appName);
+	//		runtimeService.stop(application);
+		} catch (Exception e) {
 			throw new PlatformException(e);
 		}
 	}
 
 	@Override
 	public Set<PlatformApplication> getAllApplications() {
-		return applicationService.findAll().stream().map(this::toPlatformApplication).collect(Collectors.toSet());
+		return repository.findAll().map(this::toPlatformApplication).collect(Collectors.toSet());
 	}
 
 	private PlatformApplication toPlatformApplication(Application app) {
-		return PlatformApplication.builder().application(app).container(runtimeService.getContainer(app.getName()))
+		ApplicationContainer container = ApplicationContainer.builder().status(ContainerState.UNKNOWN).build(); // runtimeService.getContainer(app.getName());
+		return PlatformApplication.builder().application(app).container(container)
 				.build();
 	}
 

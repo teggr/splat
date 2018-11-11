@@ -1,8 +1,9 @@
-package splat.core;
+package splat.os.fs;
 
 import java.io.File;
 import java.io.IOException;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import lombok.NonNull;
@@ -12,14 +13,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SplatEnvironment {
+class FileSystemEnvironment implements InitializingBean {
 
 	@NonNull
-	private final SplatProperties properties;
+	private final FileSystemProperties properties;
 	
 	private File homeDirectory;
 	
-	public void init() throws IOException {
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		
+		log.info("Initialising Home Directory");
+	
 		homeDirectory = properties.getHomeDirectory();
 		if (homeDirectory == null) {
 			homeDirectory = new File(System.getProperty("user.home"), "/.splat");

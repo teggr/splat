@@ -9,11 +9,9 @@ import java.util.Set;
  */
 public interface Platform {
 
-	void init() throws PlatformException;
+	void createNewApplicationFromArtifact(ApplicationArtifact applicationArtifact) throws PlatformException;
 
-	void createNew(ApplicationArtifact applicationArtifact) throws PlatformException;
-
-	Set<PlatformApplication> getAllApplications();
+	Set<PlatformApplication> getAllApplications() throws PlatformException;
 
 	void delete(String appName) throws PlatformException;
 

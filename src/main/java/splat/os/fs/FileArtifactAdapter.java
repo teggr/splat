@@ -1,14 +1,17 @@
-package splat.core;
+package splat.os.fs;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.io.FilenameUtils;
+
 import lombok.RequiredArgsConstructor;
+import splat.core.ApplicationArtifact;
 
 @RequiredArgsConstructor
-public class FileArtifactAdapter implements ApplicationArtifact {
+class FileArtifactAdapter implements ApplicationArtifact {
 
 	private final File file;
 
@@ -19,7 +22,12 @@ public class FileArtifactAdapter implements ApplicationArtifact {
 
 	@Override
 	public String getName() {
-		return file.getName();
+		return FilenameUtils.getBaseName(file.getName());
+	}
+
+	@Override
+	public String getType() {
+		return FilenameUtils.getExtension(file.getName());
 	}
 
 }

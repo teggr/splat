@@ -8,5 +8,7 @@ public interface ApplicationArtifact {
 	InputStream getInputStream() throws IOException;
 
 	String getName();
+	
+	String getType();
 
 }
