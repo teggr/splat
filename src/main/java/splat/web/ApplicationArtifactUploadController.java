@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 import splat.core.ApplicationArtifact;
 import splat.core.Platform;
 import splat.core.PlatformException;
+import splat.core.TemporaryResource;
+import splat.core.TemporaryUploadStore;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -29,9 +32,7 @@ public class ApplicationArtifactUploadController {
 
 	@GetMapping
 	public String get(Model model) throws IOException {
-
 		return "application-upload";
-
 	}
 
 	@PostMapping
@@ -40,11 +41,11 @@ public class ApplicationArtifactUploadController {
 
 		log.info("Uploaded a file {}", file.getOriginalFilename());
 
-		TemporaryUploadedFile uploadedFile = uploadStore.save(file);
+		TemporaryResource temporaryResource = uploadStore.save(file);
 
-		log.info("File uploaded {}", uploadedFile.getName());
+		log.info("Temporary resource created for upload {}", temporaryResource.getName());
 
-		ApplicationArtifact applicationArtifact = new UploadedFileArtifactAdapter(uploadedFile);
+		ApplicationArtifact applicationArtifact = new TemporaryResourceApplicationArtifactAdapter(temporaryResource);
 
 		platform.createNew(applicationArtifact);
 
@@ -56,6 +57,12 @@ public class ApplicationArtifactUploadController {
 
 		return "redirect:/";
 
+	}
+	
+	@ExceptionHandler(Exception.class)
+	public String handleException(Exception e, RedirectAttributes redirectAttributes) {
+		redirectAttributes.addFlashAttribute("message", e.getMessage());
+		return "redirect:/application-upload";
 	}
 
 }

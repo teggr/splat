@@ -1,7 +1,5 @@
 package splat.web;
 
-import java.nio.file.Path;
-
 import javax.validation.constraints.NotNull;
 
 import lombok.Data;

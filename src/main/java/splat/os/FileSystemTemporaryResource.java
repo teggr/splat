@@ -1,4 +1,4 @@
-package splat.web;
+package splat.os;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import lombok.RequiredArgsConstructor;
+import splat.core.TemporaryResource;
 
 @RequiredArgsConstructor
-public class TemporaryUploadedFile {
+public class FileSystemTemporaryResource implements TemporaryResource {
 	
 	private final String name;
 	private final File file;

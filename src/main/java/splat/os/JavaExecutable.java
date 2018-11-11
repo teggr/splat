@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package splat.core;
+package splat.os;
 
 import java.io.File;
 import java.io.IOException;
