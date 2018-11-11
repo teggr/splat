@@ -10,47 +10,47 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
-import splat.core.Platform;
-import splat.core.PlatformException;
+import splat.core.ApplicationService;
+import splat.core.ApplicationServiceException;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/")
 public class HomeController {
 
-	private final Platform platform;
+	private final ApplicationService applications;
 
 	@GetMapping
 	public String get(Model model) {
 		try {
-			model.addAttribute("applications", platform.getAllApplications());
-		} catch (PlatformException e) {
+			model.addAttribute("applications", applications.getAllApplications());
+		} catch (ApplicationServiceException e) {
 			model.addAttribute("message", e.getMessage());
 		}
 		return "index";
 	}
 
 	@PostMapping(params = "delete")
-	public String delete(@RequestParam("appName") String appName, RedirectAttributes redirectAttributes)
-			throws PlatformException {
-		platform.delete(appName);
-		redirectAttributes.addFlashAttribute("message", "You deleted the application " + appName + "!");
+	public String delete(@RequestParam("applicationId") String applicationId, RedirectAttributes redirectAttributes)
+			throws ApplicationServiceException {
+		applications.delete(applicationId);
+		redirectAttributes.addFlashAttribute("message", "You deleted the application " + applicationId + "!");
 		return "redirect:/";
 	}
 
 	@PostMapping(params = "restart")
-	public String restart(@RequestParam("appName") String appName, RedirectAttributes redirectAttributes)
-			throws PlatformException {
-		platform.restart(appName);
-		redirectAttributes.addFlashAttribute("message", "You restarted the application " + appName + "!");
+	public String restart(@RequestParam("applicationId") String applicationId, RedirectAttributes redirectAttributes)
+			throws ApplicationServiceException {
+		applications.restart(applicationId);
+		redirectAttributes.addFlashAttribute("message", "You restarted the application " + applicationId + "!");
 		return "redirect:/";
 	}
 
 	@PostMapping(params = "stop")
-	public String stop(@RequestParam("appName") String appName, RedirectAttributes redirectAttributes)
-			throws PlatformException {
-		platform.stop(appName);
-		redirectAttributes.addFlashAttribute("message", "You stopped the application " + appName + "!");
+	public String stop(@RequestParam("applicationId") String applicationId, RedirectAttributes redirectAttributes)
+			throws ApplicationServiceException {
+		applications.stop(applicationId);
+		redirectAttributes.addFlashAttribute("message", "You stopped the application " + applicationId + "!");
 		return "redirect:/";
 	}
 

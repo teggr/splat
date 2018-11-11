@@ -5,7 +5,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class AccessProperties {
+public class WebAccessProperties {
 
 	@NotNull
 	private String username;

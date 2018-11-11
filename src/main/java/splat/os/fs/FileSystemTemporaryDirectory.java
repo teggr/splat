@@ -3,7 +3,6 @@ package splat.os.fs;
 import java.io.File;
 import java.io.IOException;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +20,7 @@ class FileSystemTemporaryDirectory implements TemporaryArtifactStore {
 	@Override
 	public ApplicationArtifact save(MultipartFile file) throws IOException {
 		File temporaryFile = File.createTempFile("spl", "up");
-		FileUtils.copyInputStreamToFile(file.getInputStream(), temporaryFile);
+		file.transferTo(temporaryFile);
 		log.info("For upload {} a temporary file of size {} has been created {}", file.getOriginalFilename(), temporaryFile.length(),
 				temporaryFile.getAbsolutePath());
 		return new FileSystemTemporaryResource(FilenameUtils.getBaseName(file.getOriginalFilename()),

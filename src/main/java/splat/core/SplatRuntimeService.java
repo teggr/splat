@@ -69,7 +69,7 @@ public class SplatRuntimeService implements RuntimeService {
 	}
 
 	@Override
-	public void deploy(Application application) {
+	public void deploy(ApplicationConfiguration application) {
 //		runtimeScheduler.scheduleTask(new CreateApplicationContainer(application));
 	}
 
@@ -86,12 +86,12 @@ public class SplatRuntimeService implements RuntimeService {
 	}
 
 	@Override
-	public void restart(Application application) {
+	public void restart(ApplicationConfiguration application) {
 //		runtimeScheduler.scheduleTask(new RestartApplicationContainer(application));
 	}
 
 	@Override
-	public void stop(Application find) {
+	public void stop(ApplicationConfiguration find) {
 //		ApplicationContainer container = getContainer(find.getName());
 //		if (container != null) {
 //			if (container.isAlive()) {
@@ -114,7 +114,7 @@ public class SplatRuntimeService implements RuntimeService {
 	@RequiredArgsConstructor
 	private class RestartApplicationContainer implements ProcessTask {
 
-		private final Application application;
+		private final ApplicationConfiguration application;
 
 		@Override
 		public String getName() {
@@ -141,7 +141,7 @@ public class SplatRuntimeService implements RuntimeService {
 	@RequiredArgsConstructor
 	private class CreateApplicationContainer implements ProcessTask {
 
-		private final Application application;
+		private final ApplicationConfiguration application;
 
 		@Override
 		public String getName() {
@@ -217,7 +217,7 @@ public class SplatRuntimeService implements RuntimeService {
 //		containersByName.put(container.getName(), container);
 	}
 
-	private void startProcess(Application application, ApplicationContainerBuilder builder, File containerDirectory) {
+	private void startProcess(ApplicationConfiguration application, ApplicationContainerBuilder builder, File containerDirectory) {
 
 		String[] execCommand = new String[] { "-jar", application.getArtifact().getName() };
 

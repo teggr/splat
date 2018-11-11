@@ -24,32 +24,32 @@
 		    	</thead>
 		    	<tbody>
 		    		<tr th:each="app : ${applications}">
-		    			<td th:text="${app.name}"></td>
-		    			<td th:text="${app.status}"></td>
+		    			<td th:text="${app.configuration.name}"></td>
+		    			<td th:text="${app.container.status}"></td>
 		    			<th:block>
-			    			<td th:if="${app.alive}">Y</td>
-			    			<td th:unless="${app.alive}">N</td>
+			    			<td th:if="${app.container.alive}">Y</td>
+			    			<td th:unless="${app.container.alive}">N</td>
 		    			</th:block>
 		    			<td>
-		    				<th:block th:if="${app.restartable}">
+		    				<th:block th:if="${app.container.restartable}">
 			    				<form th:action="@{/}" method="post">
-			    					<input type="hidden" name="appName" th:value="${app.name}" />
+			    					<input type="hidden" name="applicationId" th:value="${app.id}" />
 			    					<button type="submit" name="restart" class="btn btn-default">Restart</button>
 			    				</form>
 		    				</th:block>
 		    			</td>
 		    			<td>
-		    				<th:block th:if="${app.stoppable}">
+		    				<th:block th:if="${app.container.stoppable}">
 			    				<form th:action="@{/}" method="post">
-			    					<input type="hidden" name="appName" th:value="${app.name}" />
+			    					<input type="hidden" name="applicationId" th:value="${app.id}" />
 			    					<button type="submit" name="stop" class="btn btn-warning">Stop</button>
 			    				</form>
 		    				</th:block>
 		    			</td>
 		    			<td>
-		    				<th:block th:if="${app.deletable}">
+		    				<th:block th:if="${app.container.deletable}">
 			    				<form th:action="@{/}" method="post">
-			    					<input type="hidden" name="appName" th:value="${app.name}" />
+			    					<input type="hidden" name="applicationId" th:value="${app.id}" />
 			    					<button type="submit" name="delete" class="btn btn-danger">Delete</button>
 			    				</form>
 		    				</th:block>

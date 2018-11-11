@@ -1,18 +1,37 @@
 package splat.core;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-@Getter
-@Builder
+/**
+ * {@link Application} is a holistic view over an
+ * {@link ApplicationConfiguration} and any associated
+ * {@link ApplicationContainer}s that contain running instances of an
+ * {@link ApplicationConfiguration}
+ */
+@RequiredArgsConstructor
 public class Application implements Comparable<Application> {
 
-	private final String name;
-	private final ApplicationArtifact artifact;
+	@NonNull
+	private final ApplicationConfiguration configuration;
+	@NonNull
+	private final ApplicationContainer container;
 
 	@Override
 	public int compareTo(Application o) {
-		return this.name.compareToIgnoreCase(o.name);
+		return o.getId().compareTo(this.getId());
+	}
+
+	public String getId() {
+		return configuration.getApplicationId();
+	}
+
+	public ApplicationConfiguration getConfiguration() {
+		return configuration;
+	}
+
+	public ApplicationContainer getContainer() {
+		return container;
 	}
 
 }

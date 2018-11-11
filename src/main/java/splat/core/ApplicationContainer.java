@@ -43,5 +43,9 @@ public class ApplicationContainer {
 	public boolean isStoppable() {
 		return isAlive();
 	}
+
+	public static ApplicationContainer empty() {
+		return ApplicationContainer.builder().status(ContainerState.UNKNOWN).build();
+	}
 	
 }

@@ -6,14 +6,14 @@ public interface RuntimeService {
 
 	ApplicationContainer getContainer(String name);
 
-	void deploy(Application application);
+	void deploy(ApplicationConfiguration application);
 
 	void init() throws IOException;
 
 	void delete(String appName);
 
-	void restart(Application application);
+	void restart(ApplicationConfiguration application);
 
-	void stop(Application find);
+	void stop(ApplicationConfiguration find);
 
 }

@@ -15,13 +15,13 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 public class WebSecurityConfig {
 
 	@Bean
-	@ConfigurationProperties("access")
-	public AccessProperties accessProperties() {
-		return new AccessProperties();
+	@ConfigurationProperties("splat.web.access")
+	public WebAccessProperties accessProperties() {
+		return new WebAccessProperties();
 	}
 
 	@Bean
-	public WebSecurityConfigurerAdapter webSecurityConfigurerAdapter(AccessProperties accessProperties) {
+	public WebSecurityConfigurerAdapter webSecurityConfigurerAdapter(WebAccessProperties accessProperties) {
 		return new WebSecurityConfigurerAdapter() {
 			@Override
 			protected void configure(HttpSecurity http) throws Exception {
