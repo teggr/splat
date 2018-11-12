@@ -18,9 +18,10 @@ public class ApplicationContainer {
 
 	private final String name;
 	@Getter(AccessLevel.NONE)
-	private final ContainerState status;
+	private ContainerState status;
 	private final SystemProcess process;
 	private final Properties properties;
+	private final Starter starter;
 
 	public String getStatus() {
 		return status.toString();
@@ -47,7 +48,28 @@ public class ApplicationContainer {
 	}
 
 	public static ApplicationContainer empty() {
-		return ApplicationContainer.builder().status(ContainerState.UNKNOWN).build();
+		return ApplicationContainer.builder().status(ContainerState.UNKNOWN).properties(new Properties())
+				.starter(new Starter() {
+					@Override
+					public void start() throws Exception {
+
+					}
+				}).build();
+	}
+
+	public static ApplicationContainerBuilder from(ApplicationContainer container) {
+		return builder().name(container.name).status(container.status).process(container.process)
+				.properties(container.properties).starter(container.starter);
+	}
+
+	public void start() throws Exception {
+		try {
+			starter.start();
+			status = ContainerState.RUNNING;
+		} catch (Exception e) {
+			status = ContainerState.RUN_FAILED;
+			throw e;
+		}
 	}
 
 }
