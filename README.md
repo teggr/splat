@@ -40,13 +40,17 @@ create a spring configuration file
 	cd ~/splat-runtime
 	mkdir config
 	nano config/application.properties
+	
+application properties
 
 	# splat platform	
-	# splat.home-directory= uncomment to change. defaults to ${user.home}/.splat
+	# splat.home-directory=${user.home}/.splat
+	# splat.os.ports.from-inclusive=9091
+	# splat.os.ports.from-inclusive=10091
 	
 	# access
-	access.username=<a username>
-	access.password=<a strong password> # see https://passwordsgenerator.net/
+	splat.web.access.username=<a username>
+	splat.web.access.password=<a strong password> # see https://passwordsgenerator.net/
 	
 	# logging
 	logging.path=/home/splat/.splat/logs

@@ -29,6 +29,7 @@ import splat.core.ApplicationContainer.ContainerState;
 import splat.core.ApplicationContainerService;
 import splat.core.Starter;
 import splat.os.fs.FileSystemEnvironment;
+import splat.os.ports.Ports;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,6 +38,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 
 	@NonNull
 	private final FileSystemEnvironment environment;
+	@NonNull
+	private final Ports ports;
 
 	private static final FileFilter applicationConfigurationDirectoryFilter = FileFilterUtils.directoryFileFilter();
 
@@ -51,6 +54,9 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		if (!runtimeDirectory.exists() && !runtimeDirectory.mkdirs()) {
 			throw new IOException("Could not create runtime directory " + runtimeDirectory + " with parent directorys");
 		}
+
+		getApplicationConfigurationDirectories().map(this::readContainer)
+				.forEach(c -> ports.allocate(c.getServerPort()));
 
 	}
 
@@ -101,7 +107,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 				throw new RuntimeException("Could not create application properties " + applicationProperties);
 			}
 			Properties properties = new Properties();
-			properties.setProperty("server.port", "8081");
+			properties.setProperty("server.port", String.valueOf(ports.allocate()));
 			properties.setProperty("logging.path", containerDirectory.getAbsolutePath());
 			try (FileWriter writer = new FileWriter(applicationProperties)) {
 				properties.store(writer, "Splat Properties for " + applicationId);
@@ -136,6 +142,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 	@Override
 	public ApplicationContainer stop(String applicationId) {
 
+		log.info("Stopping Application Container " + applicationId);
+
 		ApplicationContainer container = getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId))
 				.findFirst().map(this::readContainer).orElse(null);
 		if (container == null) {
@@ -160,6 +168,16 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 	@Override
 	public ApplicationContainer delete(String applicationId) {
 
+		log.info("Deleting Application Container " + applicationId);
+
+		ApplicationContainer container = getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId))
+				.findFirst().map(this::readContainer).orElse(null);
+		if (container == null) {
+			return ApplicationContainer.empty();
+		}
+
+		ports.deallocate(container.getServerPort());
+
 		try {
 			File applicationFolder = new File(runtimeDirectory, applicationId);
 			FileUtils.deleteDirectory(applicationFolder);
@@ -180,6 +198,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 
 	@Override
 	public ApplicationContainer restart(String applicationId) {
+
+		log.info("Restarting Application Container " + applicationId);
 
 		ApplicationContainer applicationContainer = stop(applicationId);
 		return startContainer(applicationContainer);
@@ -276,7 +296,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 
 		try {
 
-			log.info("Starting application {}", container.getName());
+			log.info("Starting container {}", container.getName());
 
 			container.start();
 			return container;

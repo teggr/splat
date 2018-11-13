@@ -1,5 +1,6 @@
 package splat.core;
 
+import java.util.Optional;
 import java.util.Properties;
 
 import org.zeroturnaround.process.SystemProcess;
@@ -70,6 +71,10 @@ public class ApplicationContainer {
 			status = ContainerState.RUN_FAILED;
 			throw e;
 		}
+	}
+
+	public Integer getServerPort() {
+		return Integer.parseInt(Optional.ofNullable(properties).map(p -> p.getProperty("server.port")).orElse("0"));
 	}
 
 }

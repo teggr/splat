@@ -16,6 +16,7 @@
 		    		<tr>
 		    			<th>Name</th>
 		    			<th>Status</th>
+		    			<th>Port</th>
 		    			<th>Alive</th>
 		    			<th></th>
 		    			<th></th>
@@ -26,6 +27,7 @@
 		    		<tr th:each="app : ${applications}">
 		    			<td th:text="${app.configuration.name}"></td>
 		    			<td th:text="${app.container.status}"></td>
+		    			<td th:text="${app.container.serverPort}"></td>
 		    			<th:block>
 			    			<td th:if="${app.container.alive}">Y</td>
 			    			<td th:unless="${app.container.alive}">N</td>
