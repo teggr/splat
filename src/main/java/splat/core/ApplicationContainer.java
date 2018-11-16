@@ -74,7 +74,13 @@ public class ApplicationContainer {
 	}
 
 	public Integer getServerPort() {
-		return Integer.parseInt(Optional.ofNullable(properties).map(p -> p.getProperty("server.port")).orElse("0"));
+		return Integer.parseInt(Optional.ofNullable(properties)
+				.map(p -> p.getProperty(SpringBootApplicationProperties.SERVER_PORT)).orElse("0"));
+	}
+
+	public String getContextPath() {
+		return Optional.ofNullable(properties)
+				.map(p -> p.getProperty(SpringBootApplicationProperties.SERVER_SERVLET_CONTEXT_PATH)).orElse("/");
 	}
 
 }

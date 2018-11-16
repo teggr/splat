@@ -16,6 +16,7 @@
 		    		<tr>
 		    			<th>Name</th>
 		    			<th>Status</th>
+		    			<th>Context Path</th>
 		    			<th>Port</th>
 		    			<th>Alive</th>
 		    			<th></th>
@@ -28,6 +29,7 @@
 		    			<td th:text="${app.configuration.name}"></td>
 		    			<td th:text="${app.container.status}"></td>
 		    			<td th:text="${app.container.serverPort}"></td>
+		    			<td th:text="${app.container.contextPath}"></td>
 		    			<th:block>
 			    			<td th:if="${app.container.alive}">Y</td>
 			    			<td th:unless="${app.container.alive}">N</td>

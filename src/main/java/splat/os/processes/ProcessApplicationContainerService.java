@@ -27,6 +27,7 @@ import splat.core.ApplicationContainer;
 import splat.core.ApplicationContainer.ApplicationContainerBuilder;
 import splat.core.ApplicationContainer.ContainerState;
 import splat.core.ApplicationContainerService;
+import splat.core.SpringBootApplicationProperties;
 import splat.core.Starter;
 import splat.os.fs.FileSystemEnvironment;
 import splat.os.ports.Ports;
@@ -107,8 +108,9 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 				throw new RuntimeException("Could not create application properties " + applicationProperties);
 			}
 			Properties properties = new Properties();
-			properties.setProperty("server.port", String.valueOf(ports.allocate()));
-			properties.setProperty("logging.path", containerDirectory.getAbsolutePath());
+			properties.setProperty(SpringBootApplicationProperties.SERVER_PORT, String.valueOf(ports.allocate()));
+			properties.setProperty(SpringBootApplicationProperties.LOGGING_PATH, containerDirectory.getAbsolutePath());
+			properties.setProperty(SpringBootApplicationProperties.SERVER_SERVLET_CONTEXT_PATH, "/" + applicationId);
 			try (FileWriter writer = new FileWriter(applicationProperties)) {
 				properties.store(writer, "Splat Properties for " + applicationId);
 			}
