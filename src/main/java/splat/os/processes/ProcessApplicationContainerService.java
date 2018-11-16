@@ -86,7 +86,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 
 		log.info("Created application container directory {}", containerDirectory);
 
-		File runtimeArtifact = new File(containerDirectory, applicationId);
+		String jarFileName = applicationId + ".jar";
+		File runtimeArtifact = new File(containerDirectory, jarFileName);
 		try {
 			FileUtils.copyInputStreamToFile(configuration.getArtifact().getInputStream(), runtimeArtifact);
 		} catch (Exception e) {
@@ -121,7 +122,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 			throw new RuntimeException(msg);
 		}
 
-		String[] execCommand = new String[] { "-jar", configuration.getArtifact().getName() };
+		String[] execCommand = new String[] { "-jar", jarFileName };
 		File runFile = new File(containerDirectory, applicationId + ".run");
 		try {
 			if (!runFile.exists() && !runFile.createNewFile()) {

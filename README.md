@@ -45,24 +45,29 @@ Server jar available in target/splat-web.jar
 1. follow instructions on https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04
 2. should be able to access the nginx home page using droplet ip address http://{droplet.ipaddress}/
 3. backup then open default site
+
 	sudo cp /etc/nginx/sites-enabled/default ~/nginx.default.bkp
 	sudo vi /etc/nginx/sites-enabled/default
+	
 4. set the location entry
-	      location / {
-                proxy_set_header        Host $host;
-                proxy_set_header        X-Real-IP $remote_addr;
-                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header        X-Forwarded-Proto $scheme;
 
-                proxy_pass              http://localhost:8080;
-                proxy_read_timeout      90;
+	location / {
+		proxy_set_header        Host $host;
+		proxy_set_header        X-Real-IP $remote_addr;
+		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header        X-Forwarded-Proto $scheme;
 
-                proxy_redirect          http://localhost:8080   http://$host;
+		proxy_pass              http://localhost:8080;
+		proxy_read_timeout      90;
+
+		proxy_redirect          http://localhost:8080   http://$host;
                 
-                client_max_body_size	1000M;
+		client_max_body_size	1000M;
                 
-        }
+	}
+	
 5. restart nginx
+
 	sudo service nginx restart
 
 ## access application through SSH tunnel (alternative to nginx)
@@ -119,6 +124,6 @@ Create the systemd service script
 	
 # upload application
 
-	go to index.html
-	log in
-	upload the a spring boot jar
+1. go to index.html
+2. log in
+3. upload the a spring boot jar
