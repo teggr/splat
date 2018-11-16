@@ -1,5 +1,7 @@
 package splat.web;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,12 +23,13 @@ public class HomeController {
 	private final ApplicationService applications;
 
 	@GetMapping
-	public String get(Model model) {
+	public String get(HttpServletRequest request, Model model) {
 		try {
 			model.addAttribute("applications", applications.getAllApplications());
 		} catch (ApplicationServiceException e) {
 			model.addAttribute("message", e.getMessage());
 		}
+		model.addAttribute("Urls", new UrlHelper(request));
 		return "index";
 	}
 

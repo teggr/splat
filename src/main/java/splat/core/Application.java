@@ -1,5 +1,6 @@
 package splat.core;
 
+import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
  * {@link ApplicationConfiguration}
  */
 @RequiredArgsConstructor
+@Getter
 public class Application implements Comparable<Application> {
 
 	@NonNull
@@ -24,14 +26,6 @@ public class Application implements Comparable<Application> {
 
 	public String getId() {
 		return configuration.getApplicationId();
-	}
-
-	public ApplicationConfiguration getConfiguration() {
-		return configuration;
-	}
-
-	public ApplicationContainer getContainer() {
-		return container;
 	}
 
 }

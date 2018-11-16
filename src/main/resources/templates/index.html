@@ -16,8 +16,9 @@
 		    		<tr>
 		    			<th>Name</th>
 		    			<th>Status</th>
-		    			<th>Context Path</th>
 		    			<th>Port</th>
+		    			<th>Context Path</th>
+		    			<th>Application</th>
 		    			<th>Alive</th>
 		    			<th></th>
 		    			<th></th>
@@ -29,7 +30,8 @@
 		    			<td th:text="${app.configuration.name}"></td>
 		    			<td th:text="${app.container.status}"></td>
 		    			<td th:text="${app.container.serverPort}"></td>
-		    			<td ><a th:href="@{${app.container.contextPath}}" target="_blank"> <span th:text="${app.container.contextPath}"></span> <i class="fas fa-external-link-square-alt"></i></a></td>
+		    			<td th:text="${app.container.contextPath}"></td>
+		    			<td ><a th:href="${Urls.resolve(app.container)}" target="_blank"> <span th:text="${app.container.contextPath}"></span> <i class="fas fa-external-link-square-alt"></i></a></td>
 		    			<th:block>
 			    			<td th:if="${app.container.alive}">Y</td>
 			    			<td th:unless="${app.container.alive}">N</td>
