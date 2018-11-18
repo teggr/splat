@@ -16,7 +16,9 @@ import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
+import org.zeroturnaround.exec.ProcessExecutor;
 import org.zeroturnaround.process.PidProcess;
+import org.zeroturnaround.process.PidUtil;
 import org.zeroturnaround.process.Processes;
 
 import lombok.NonNull;
@@ -122,7 +124,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 			throw new RuntimeException(msg);
 		}
 
-		String[] execCommand = new String[] { "-jar", jarFileName };
+		String[] execCommand = new String[] { "-jar", jarFileName, "--debug" };
 		File runFile = new File(containerDirectory, applicationId + ".run");
 		try {
 			if (!runFile.exists() && !runFile.createNewFile()) {
@@ -273,14 +275,18 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		@Override
 		public void start() throws Exception {
 
-			ProcessBuilder processBuilder = new JavaExecutable().processBuilder(execCommand)
+			ProcessExecutor processExecutor = new JavaExecutable().processExecutor(execCommand)
 					.directory(applicationDirectory);
 
-			PidProcess pidProcess = Processes.newPidProcess(processBuilder.start());
+			log.info("About to start process {}", processExecutor);
+
+			int pid = PidUtil.getPid(processExecutor.start().getProcess());
+
+			// PidProcess pidProcess = Processes.newPidProcess();
 
 			// create a pid file?
 			File pidFile = new File(applicationDirectory, applicationId + ".pid");
-			FileUtils.writeStringToFile(pidFile, String.valueOf(pidProcess.getPid()), Charset.defaultCharset());
+			FileUtils.writeStringToFile(pidFile, String.valueOf(pid), Charset.defaultCharset());
 
 		}
 

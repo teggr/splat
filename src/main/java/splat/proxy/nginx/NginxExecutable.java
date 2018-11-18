@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package splat.os.processes;
+package splat.proxy.nginx;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
-import org.zeroturnaround.exec.ProcessExecutor;
 
 /**
  * Provides access to the java binary executable, regardless of OS.
@@ -32,21 +29,20 @@ import org.zeroturnaround.exec.ProcessExecutor;
  * @author Phillip Webb
  * @since 1.1.0
  */
-public class JavaExecutable {
+public class NginxExecutable {
 
 	private File file;
 
-	public JavaExecutable() {
-		String javaHome = System.getProperty("java.home");
+	public NginxExecutable(String javaHome) {
 		Assert.state(StringUtils.hasLength(javaHome), "Unable to find java executable due to missing 'java.home'");
 		this.file = findInJavaHome(javaHome);
 	}
 
 	private File findInJavaHome(String javaHome) {
-		File bin = new File(new File(javaHome), "bin");
-		File command = new File(bin, "java.exe");
-		command = command.exists() ? command : new File(bin, "java");
-		Assert.state(command.exists(), () -> "Unable to find java in " + javaHome);
+		File bin = new File(javaHome);
+		File command = new File(bin, "nginx.exe");
+		command = command.exists() ? command : new File(bin, "nginx");
+		Assert.state(command.exists(), () -> "Unable to find nginx in " + javaHome);
 		return command;
 	}
 
@@ -69,13 +65,6 @@ public class JavaExecutable {
 		} catch (IOException ex) {
 			throw new IllegalStateException(ex);
 		}
-	}
-
-	public ProcessExecutor processExecutor(String[] arguments) {
-		List<String> commands = new ArrayList<>();
-		commands.add(toString());
-		commands.addAll(Arrays.asList(arguments));
-		return new ProcessExecutor(commands);
 	}
 
 }

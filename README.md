@@ -131,3 +131,13 @@ Create the systemd service script
 1. go to index.html
 2. log in
 3. upload the a spring boot jar
+
+# Troubleshooting
+
+# Really slow loading times on Windows 10
+
+Seems to be related to localhost lookup times. You can override the hosts file in c:\windows\system32\drivers\etc\hosts
+
+	# localhost name resolution is handled within DNS itself.
+	127.0.0.1       localhost
+	::1             localhost

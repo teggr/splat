@@ -18,6 +18,9 @@ public class SplatApplicationService implements ApplicationService {
 	private final ApplicationConfigurationRepository repository;
 	@NonNull
 	private final ApplicationContainerService containers;
+
+	private final ProxyService proxyService;
+
 	@NonNull
 	private final LocationService locationService;
 
@@ -34,7 +37,10 @@ public class SplatApplicationService implements ApplicationService {
 			ApplicationConfiguration configuration = ApplicationConfiguration.builder().applicationId(applicationId)
 					.name(applicationArtifact.getName()).artifact(applicationArtifact).build();
 
-			return toApplication(repository.save(configuration), containers.start(configuration));
+			ApplicationConfiguration applicationConfiguration = repository.save(configuration);
+			ApplicationContainer container = containers.start(configuration);
+			proxyService.start(container.getServerPort(), container.getContextPath());
+			return toApplication(applicationConfiguration, container);
 
 		} catch (Exception e) {
 			throw new ApplicationServiceException("Could not create a new application", e);
@@ -44,8 +50,9 @@ public class SplatApplicationService implements ApplicationService {
 	@Override
 	public void delete(String applicationId) throws ApplicationServiceException {
 		try {
-			containers.stop(applicationId);
+			ApplicationContainer container = containers.stop(applicationId);
 			containers.delete(applicationId);
+			proxyService.remove(container.getContextPath());
 			repository.remove(applicationId);
 		} catch (Exception e) {
 			throw new ApplicationServiceException("Could not delete application " + applicationId, e);
