@@ -1,6 +1,6 @@
 package splat.core;
 
-import java.io.File;
+import java.net.URL;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -12,6 +12,6 @@ import lombok.Data;
 @ConfigurationProperties("splat")
 public class SplatProperties {
 
-	private File homeDirectory;
+	private URL location;
 
 }

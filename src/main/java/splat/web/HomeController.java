@@ -29,7 +29,6 @@ public class HomeController {
 		} catch (ApplicationServiceException e) {
 			model.addAttribute("message", e.getMessage());
 		}
-		model.addAttribute("Urls", new UrlHelper(request));
 		return "index";
 	}
 

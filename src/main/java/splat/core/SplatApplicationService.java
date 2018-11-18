@@ -18,6 +18,8 @@ public class SplatApplicationService implements ApplicationService {
 	private final ApplicationConfigurationRepository repository;
 	@NonNull
 	private final ApplicationContainerService containers;
+	@NonNull
+	private final LocationService locationService;
 
 	@Override
 	public Application createFromArtifact(ApplicationArtifact applicationArtifact) throws ApplicationServiceException {
@@ -81,7 +83,8 @@ public class SplatApplicationService implements ApplicationService {
 	}
 
 	private Application toApplication(ApplicationConfiguration configuration, ApplicationContainer container) {
-		return new Application(configuration, container);
+		return new Application(locationService.getLocation(container.getServerPort(), container.getContextPath()),
+				configuration, container);
 	}
 
 }

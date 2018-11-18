@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>    
+    <th:block th:replace="fragments/head :: common" />
+    <title>Admin</title>    
+  </head>
+  <body>
+    <th:block th:replace="fragments/header :: common" />
+    <th:block th:replace="fragments/messages :: common" />
+    
+    <div class="container">
+	    <h1>Admin</h1>
+	    <form th:action="${#httpServletRequest.requestURI}" method="post" th:object="${adminForm}">
+	    	<div class="form-group">
+			    <label for="location">Location</label>
+			    <p class="form-control" th:text="*{location}" aria-describedby="locationHelp">
+			    <small id="locationHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+			  </div>
+	    </form>
+	</div>
+	
+	<th:block th:replace="fragments/scripts :: common" />
+
+  </body>
+</html>

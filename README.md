@@ -84,10 +84,14 @@ create a spring configuration file
 	
 application properties
 
+	# server properties
+	server.port=8080
+
 	# splat platform	
 	# splat.home-directory=${user.home}/.splat
 	# splat.os.ports.from-inclusive=9091
 	# splat.os.ports.from-inclusive=10091
+	# splat.location=http://localhost:${server.port:8080}
 	
 	# access
 	splat.web.access.username=<a username>

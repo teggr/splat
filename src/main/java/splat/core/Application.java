@@ -1,5 +1,7 @@
 package splat.core;
 
+import java.net.URL;
+
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class Application implements Comparable<Application> {
 
+	@NonNull
+	private final URL url;
 	@NonNull
 	private final ApplicationConfiguration configuration;
 	@NonNull
