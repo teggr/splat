@@ -52,6 +52,7 @@ Server jar available in target/splat-web.jar
 4. set the location entry
 
 	location / {
+	
 		proxy_set_header        Host $host;
 		proxy_set_header        X-Real-IP $remote_addr;
 		proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -64,7 +65,7 @@ Server jar available in target/splat-web.jar
                 
 		client_max_body_size	1000M;
                 
-	}
+	}	
 	
 5. restart nginx
 
@@ -84,14 +85,13 @@ create a spring configuration file
 	
 application properties
 
-	# server properties
-	server.port=8080
+	# proxy configuration
+	splat.location=http://{your-location}
 
 	# splat platform	
 	# splat.home-directory=${user.home}/.splat
 	# splat.os.ports.from-inclusive=9091
 	# splat.os.ports.from-inclusive=10091
-	# splat.location=http://localhost:${server.port:8080}
 	
 	# access
 	splat.web.access.username=<a username>

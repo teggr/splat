@@ -80,7 +80,7 @@ public class ApplicationContainer {
 
 	public String getContextPath() {
 		return Optional.ofNullable(properties)
-				.map(p -> p.getProperty(SpringBootApplicationProperties.SERVER_SERVLET_CONTEXT_PATH)).orElse("/");
+				.map(p -> p.getProperty(SpringBootApplicationProperties.SPLAT_APPLICATION_CONTEXT_PATH)).orElse("/");
 	}
 
 }

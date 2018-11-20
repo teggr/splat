@@ -3,6 +3,7 @@ package splat.core;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
 import lombok.NonNull;
@@ -12,17 +13,24 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class SplatApplicationService implements ApplicationService {
+public class SplatApplicationService implements ApplicationService, InitializingBean {
 
 	@NonNull
 	private final ApplicationConfigurationRepository repository;
 	@NonNull
 	private final ApplicationContainerService containers;
-
+	@NonNull
 	private final ProxyService proxyService;
-
 	@NonNull
 	private final LocationService locationService;
+	@NonNull
+	private final ApplicationContainerProcessor applicationContainerProcessor;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		log.info("Processing all the containers");
+		containers.getAll().stream().forEach(applicationContainerProcessor::process);
+	}
 
 	@Override
 	public Application createFromArtifact(ApplicationArtifact applicationArtifact) throws ApplicationServiceException {

@@ -6,8 +6,10 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.Properties;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
@@ -64,6 +66,11 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 	}
 
 	@Override
+	public Collection<ApplicationContainer> getAll() {
+		return getApplicationConfigurationDirectories().map(this::readContainer).collect(Collectors.toSet());
+	}
+
+	@Override
 	public ApplicationContainer get(String applicationId) {
 		return getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId)).findFirst()
 				.map(this::readContainer).orElse(ApplicationContainer.empty());
@@ -113,7 +120,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 			Properties properties = new Properties();
 			properties.setProperty(SpringBootApplicationProperties.SERVER_PORT, String.valueOf(ports.allocate()));
 			properties.setProperty(SpringBootApplicationProperties.LOGGING_PATH, containerDirectory.getAbsolutePath());
-			properties.setProperty(SpringBootApplicationProperties.SERVER_SERVLET_CONTEXT_PATH, "/" + applicationId);
+			properties.setProperty(SpringBootApplicationProperties.SPLAT_APPLICATION_CONTEXT_PATH, "/" + applicationId);
 			try (FileWriter writer = new FileWriter(applicationProperties)) {
 				properties.store(writer, "Splat Properties for " + applicationId);
 			}
