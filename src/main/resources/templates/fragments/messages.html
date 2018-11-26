@@ -5,10 +5,20 @@
 
 	<div class="container">		
 		<div th:if="${message}">
-			<div class="alert alert-info" role="alert" th:text="${message}"></div>
+			<div class="alert alert-info alert-dismissible fade show" role="alert" >
+				<div th:text="${message}"></div>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				    <span aria-hidden="true">&times;</span>
+				  </button>
+			</div>
 		</div>
 		<div th:if="${refresh}">
-			<div class="alert alert-info" role="alert" th:text="${'Application is making changes for you. This page will refresh in ' + refresh + ' seconds'}"></div>
+			<div class="alert alert-info alert-dismissible fade show" role="alert" >
+				<div th:text="${'Application is making changes for you. This page will refresh in ' + refresh + ' seconds'}"></div>
+			</div>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			    <span aria-hidden="true">&times;</span>
+			  </button>
 		</div>
 	</div>
 	
