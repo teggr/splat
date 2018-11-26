@@ -12,18 +12,43 @@
   
   		<h1>Upload your Spring Boot Application</h1>
 	    <div>
-		    <form method="POST" enctype="multipart/form-data" th:action="@{/application-upload}">
-			  <div class="form-group" >
-			    <label for="spring-boot-application-file-picker">Browse for a jar file</label>
-			    <input type="file" class="form-control-file" id="spring-boot-application-file-picker" name="file">
-			  </div>
-			  <button type="submit" class="btn btn-primary">Submit</button>
+		    <form method="POST" enctype="multipart/form-data" th:action="@{/application-upload}" class="dropzone" id="my-awesome-dropzone">
+				<div class="fallback d-none">
+					  <div class="form-group" >
+					    <label for="spring-boot-application-file-picker">Browse for a jar file</label>
+					    <input type="file" class="form-control-file" id="spring-boot-application-file-picker" name="file">
+					  </div>			  			 
+			  		<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
 			</form>
 		</div>
 	
 	</div>
 
 	<th:block th:replace="fragments/scripts :: common" />
+	
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.5.1/min/dropzone.min.js" ></script>
+	<script type="text/javascript" th:inline="javascript">
+	
+		Dropzone.autoDiscover = false;
+
+		$(function() {
+			
+			var myDropzone = new Dropzone("#my-awesome-dropzone",{
+				url: [[@{/api/applications}]]
+			});
+			
+			myDropzone.on("success", function(file,response) {
+				myDropzone.removeFile(file);
+				window.location.replace( [[@{/}]] );
+			});
+			
+			myDropzone.on("error", function(file,response) {
+				console.log("Oh no ERROR :(");
+			});
+		});
+		
+	</script>
     
   </body>
 </html>
