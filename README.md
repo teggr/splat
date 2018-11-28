@@ -8,6 +8,13 @@ Simple platform-as-a-service for Spring Boot deployments
 
 Server jar available in target/splat-web.jar
 
+## build troublshooting
+
+If the maven release plugin fails, to delete the tag
+
+	git tag -d [tag]
+	git push origin :[tag]
+
 # deploy server jar to Digital Ocean
 
 ## create digital ocean droplet
