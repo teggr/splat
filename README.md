@@ -41,7 +41,8 @@ If the maven release plugin fails, to delete the tag
 ## install splat application as a service
 
 1. make directory ~/splat-runtime
-2. upload the splat-web.jar to this directory
+2. grab the latest splat-web application from the GitHub release page: https://github.com/teggr/splat/releases
+	curl -sL -o splat-web.jar "https://github.com/teggr/splat/releases/download/v0.0.1/splat-web.jar"
 3. make directory ~/splat-runtime/config
 4. Create a application.properties file in the config directory. See below for details.
 5. Create a SystemD service. See below for details.
