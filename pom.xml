@@ -23,8 +23,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
-		<!-- deploy properties -->
+		<!-- release + deploy properties -->
 		<maven.deploy.skip>true</maven.deploy.skip>
+		<project.scm.id>github</project.scm.id>
 		<!-- versions -->
 	</properties>
 
