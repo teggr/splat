@@ -6,6 +6,10 @@ Simple platform-as-a-service for Spring Boot deployments
 
     mvn clean install
 
+# release instructions
+
+	mvn -Prelease clean release:prepare release:perform
+
 Server jar available in target/splat-web.jar
 
 ## build troublshooting
