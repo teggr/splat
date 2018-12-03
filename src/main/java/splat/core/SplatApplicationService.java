@@ -102,4 +102,10 @@ public class SplatApplicationService implements ApplicationService, Initializing
 				configuration, container);
 	}
 
+	@Override
+	public Application getApplication(String applicationId) throws ApplicationServiceException {
+		ApplicationConfiguration configuration = repository.find(applicationId);
+		return toApplication(configuration, containers.get(applicationId));
+	}
+
 }

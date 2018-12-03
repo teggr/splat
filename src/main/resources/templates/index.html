@@ -16,10 +16,12 @@
 		    		<tr>
 		    			<th>Name</th>
 		    			<th>Status</th>
+		    			<th>Port Range</th>
 		    			<th>Port</th>
 		    			<th>Context Path</th>
 		    			<th>Application</th>
 		    			<th>Alive</th>
+		    			<th></th>
 		    			<th></th>
 		    			<th></th>
 		    			<th></th>
@@ -29,6 +31,10 @@
 		    		<tr th:each="app : ${applications}">
 		    			<td th:text="${app.configuration.name}"></td>
 		    			<td th:text="${app.container.status}"></td>
+		    			<th:block>
+	    				<td th:if="${app.configuration.portRange.notRestricted}">Any</td>
+	    				<td th:unless="${app.configuration.portRange.notRestricted}" th:text="${app.configuration.portRange}"></td>
+		    			</th:block>
 		    			<td th:text="${app.container.serverPort}"></td>
 		    			<td th:text="${app.container.contextPath}"></td>
 		    			<td ><a th:href="${app.url}" target="_blank"> <span th:text="${app.container.contextPath}"></span> <i class="fas fa-external-link-square-alt"></i></a></td>
@@ -36,6 +42,9 @@
 			    			<td th:if="${app.container.alive}">Y</td>
 			    			<td th:unless="${app.container.alive}">N</td>
 		    			</th:block>
+		    			<td>
+		    				<a th:href="@{/applications/{id}(id=${app.id})}" class="btn btn-primary">Configure</a>
+		    			</td>
 		    			<td>
 		    				<th:block th:if="${app.container.restartable}">
 			    				<form th:action="@{/}" method="post">

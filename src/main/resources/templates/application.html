@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>    
+    <th:block th:replace="fragments/head :: common" />
+    <title>Application</title>    
+  </head>
+  <body>
+    <th:block th:replace="fragments/header :: common" />
+    <th:block th:replace="fragments/messages :: common" />
+    
+    <div class="container">
+	    <h1>Application</h1>
+	    <h2 th:text="${app.configuration.name}"></h2>
+	    <div class="row">
+	    	<div class="col">
+		    	<a th:href="${app.url}" target="_blank"> <span th:text="${app.container.contextPath}"></span> <i class="fas fa-external-link-square-alt"></i></a>
+	    	</div>
+	    </div>
+	    <div class="row">
+	    
+	    	<div class="col">
+   				<th:block th:if="${app.container.restartable}">
+    				<form th:action="@{/}" method="post">
+    					<input type="hidden" name="applicationId" th:value="${app.id}" />
+    					<button type="submit" name="restart" class="btn btn-default">Restart</button>
+    				</form>
+   				</th:block>
+   			</div>
+   			<div class="col">
+   				<th:block th:if="${app.container.stoppable}">
+    				<form th:action="@{/}" method="post">
+    					<input type="hidden" name="applicationId" th:value="${app.id}" />
+    					<button type="submit" name="stop" class="btn btn-warning">Stop</button>
+    				</form>
+   				</th:block>
+   			</div>
+   			<div class="col">
+   				<th:block th:if="${app.container.deletable}">
+    				<form th:action="@{/}" method="post">
+    					<input type="hidden" name="applicationId" th:value="${app.id}" />
+    					<button type="submit" name="delete" class="btn btn-danger">Delete</button>
+    				</form>
+   				</th:block>
+   			</div>
+	    	
+	    </div>
+	    
+	    <h3>Configuration</h3>
+	    
+	    <div class="card" style="width: 18rem;">
+		  <div class="card-body">
+		    <h5 class="card-title">Port Range</h5>
+		    <th:block>
+			    <p class="card-text" th:if="${app.configuration.portRange.notRestricted}">Any</p>
+			    <p class="card-text" th:unless="${app.configuration.portRange.notRestricted}" th:text="${app.configuration.portRange}"></p>		    
+   			</th:block>
+		  </div>
+		</div>
+	    
+	    <h3>Containers</h3>
+		
+		<div class="card">
+		  <div class="card-body">
+
+		    <table class="table">
+		    	<thead>
+		    		<tr>
+		    			<th>Status</th>
+		    			<th>Port</th>
+		    			<th>Context Path</th>
+		    			<th>Alive</th>
+		    		</tr>	    
+		    	</thead>
+		    	<tbody>
+		    		<tr>
+		    			<td th:text="${app.container.status}"></td>
+		    			<td th:text="${app.container.serverPort}"></td>
+		    			<td th:text="${app.container.contextPath}"></td>
+		    			<th:block>
+			    			<td th:if="${app.container.alive}">Y</td>
+			    			<td th:unless="${app.container.alive}">N</td>
+		    			</th:block>		    			
+		    		</tr>
+		    	</tbody>
+		    </table>
+		    		    
+		  </div>
+		</div>
+	    
+
+	</div>
+	
+	<th:block th:replace="fragments/scripts :: common" />
+
+  </body>
+</html>

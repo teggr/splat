@@ -22,7 +22,7 @@ import splat.core.TemporaryArtifactStore;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/applications")
-public class ApplicationsController {
+public class RestApiApplicationsController {
 
 	private final ApplicationService applications;
 

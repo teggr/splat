@@ -9,6 +9,8 @@ public class ApplicationConfiguration implements Comparable<ApplicationConfigura
 
 	private final String name;
 	private final String applicationId;
+	@Builder.Default
+	private PortRange portRange = PortRange.NOT_RESTRICTED;
 	private final ApplicationArtifact artifact;
 
 	@Override

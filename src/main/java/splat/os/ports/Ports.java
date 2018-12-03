@@ -11,7 +11,7 @@ public class Ports {
 
 	public Ports(int fromInclusive, int toInclusive) {
 		log.info("Allocating ports from {} to {}", fromInclusive, toInclusive);
-		for (int i = toInclusive; i >= toInclusive; i--) {
+		for (int i = toInclusive; i >= fromInclusive; i--) {
 			portStack.add(i);
 		}
 	}
