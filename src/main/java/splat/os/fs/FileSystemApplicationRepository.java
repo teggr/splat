@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import splat.core.ApplicationConfiguration;
 import splat.core.ApplicationConfigurationRepository;
+import splat.core.PortRange;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -48,7 +49,7 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 		applicationsDirectory = new File(environment.getHomeDirectory(), "applications");
 		if (!applicationsDirectory.exists() && !applicationsDirectory.mkdirs()) {
 			throw new IOException(
-					"Could not create applications directory " + applicationsDirectory + " with parent directorys");
+			        "Could not create applications directory " + applicationsDirectory + " with parent directorys");
 		}
 
 	}
@@ -61,8 +62,8 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 	@Override
 	public ApplicationConfiguration find(String id) {
 		return getApplicationConfigurationDirectories().filter(directoryNameIs(id)).findFirst()
-				.map(this::readConfiguration)
-				.orElseThrow(() -> new FileSystemException("Could not find application configuration " + id));
+		        .map(this::readConfiguration)
+		        .orElseThrow(() -> new FileSystemException("Could not find application configuration " + id));
 	}
 
 	@Override
@@ -79,7 +80,7 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 
 		} catch (IOException e) {
 			String message = "Could not save the application " + applicationConfiguration.getName() + ": "
-					+ e.getMessage();
+			        + e.getMessage();
 			log.error(message, e);
 			throw new FileSystemException(message, e);
 		}
@@ -95,7 +96,7 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 			log.info("Deleted directory {}", applicationFolder.getAbsolutePath());
 		} catch (IOException e) {
 			String message = "Could not delete the application " + applicationFolder.getAbsolutePath() + ": "
-					+ e.getMessage();
+			        + e.getMessage();
 			log.error(message, e);
 			throw new FileSystemException(message, e);
 		}
@@ -114,12 +115,13 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 			File configurationFile = new File(applicationDirectory, "config.xml");
 
 			XmlApplicationConfiguration config = xmlMapper.readValue(configurationFile,
-					XmlApplicationConfiguration.class);
+			        XmlApplicationConfiguration.class);
 
 			return ApplicationConfiguration.builder().name(config.getName()).applicationId(config.getApplicationId())
-					.artifact(
-							new FileArtifactAdapter(new File(applicationDirectory, config.getArtifactName() + ".jar")))
-					.build();
+			        .portRange(new PortRange(config.getPortRangeFromInclusive(), config.getPortRangeToInclusive()))
+			        .artifact(
+			                new FileArtifactAdapter(new File(applicationDirectory, config.getArtifactName() + ".jar")))
+			        .build();
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -136,7 +138,7 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 	}
 
 	private ApplicationConfiguration writeConfiguration(ApplicationConfiguration applicationConfiguration)
-			throws IOException {
+	        throws IOException {
 
 		// create a new application folder from artifact name
 		File applicationDirectory = new File(applicationsDirectory, applicationConfiguration.getApplicationId());
@@ -149,7 +151,7 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 		File configurationFile = new File(applicationDirectory, "config.xml");
 
 		String writeValueAsString = xmlMapper.writer().withRootName("applicationConfiguration")
-				.writeValueAsString(configuration);
+		        .writeValueAsString(configuration);
 		FileUtils.writeStringToFile(configurationFile, writeValueAsString, StandardCharsets.UTF_8);
 
 		// store the jar file
@@ -158,9 +160,8 @@ class FileSystemApplicationRepository implements ApplicationConfigurationReposit
 		log.info("Created application artifact {} of size {}", artifactFile.getAbsolutePath(), artifactFile.length());
 
 		// rebuild the configuraiton object
-		return ApplicationConfiguration.builder().name(applicationConfiguration.getName())
-				.applicationId(applicationConfiguration.getApplicationId())
-				.artifact(new FileArtifactAdapter(artifactFile)).build();
+		return ApplicationConfiguration.from(applicationConfiguration).artifact(new FileArtifactAdapter(artifactFile))
+		        .build();
 
 	}
 

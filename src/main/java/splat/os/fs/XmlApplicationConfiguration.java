@@ -12,11 +12,15 @@ public class XmlApplicationConfiguration {
 	private String applicationId;
 	private String name;
 	private String artifactName;
+	private int portRangeFromInclusive;
+	private int portRangeToInclusive;
 
 	public XmlApplicationConfiguration(ApplicationConfiguration configuration) {
 		applicationId = configuration.getApplicationId();
 		name = configuration.getName();
 		artifactName = configuration.getArtifact().getName();
+		portRangeFromInclusive = configuration.getPortRange().getFromInclusive();
+		portRangeToInclusive = configuration.getPortRange().getToInclusive();
 	}
 
 	public XmlApplicationConfiguration() {

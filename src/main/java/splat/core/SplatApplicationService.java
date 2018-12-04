@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import splat.os.ports.Ports;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,6 +26,8 @@ public class SplatApplicationService implements ApplicationService, Initializing
 	private final LocationService locationService;
 	@NonNull
 	private final ApplicationContainerProcessor applicationContainerProcessor;
+	@NonNull
+	private final Ports ports;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

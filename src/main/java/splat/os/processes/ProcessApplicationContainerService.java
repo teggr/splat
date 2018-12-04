@@ -61,7 +61,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		}
 
 		getApplicationConfigurationDirectories().map(this::readContainer)
-				.forEach(c -> ports.allocate(c.getServerPort()));
+		        .forEach(c -> ports.allocate(c.getServerPort()));
 
 	}
 
@@ -73,7 +73,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 	@Override
 	public ApplicationContainer get(String applicationId) {
 		return getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId)).findFirst()
-				.map(this::readContainer).orElse(ApplicationContainer.empty());
+		        .map(this::readContainer).orElse(ApplicationContainer.empty());
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 				throw new RuntimeException("Could not create application properties " + applicationProperties);
 			}
 			Properties properties = new Properties();
-			properties.setProperty(SpringBootApplicationProperties.SERVER_PORT, String.valueOf(ports.allocate()));
+			properties.setProperty(SpringBootApplicationProperties.SERVER_PORT, String.valueOf(ports.allocateFrom(configuration.getPortRange())));
 			properties.setProperty(SpringBootApplicationProperties.LOGGING_PATH, containerDirectory.getAbsolutePath());
 			properties.setProperty(SpringBootApplicationProperties.SPLAT_APPLICATION_CONTEXT_PATH, "/" + applicationId);
 			try (FileWriter writer = new FileWriter(applicationProperties)) {
@@ -157,7 +157,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		log.info("Stopping Application Container " + applicationId);
 
 		ApplicationContainer container = getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId))
-				.findFirst().map(this::readContainer).orElse(null);
+		        .findFirst().map(this::readContainer).orElse(null);
 		if (container == null) {
 			return ApplicationContainer.empty();
 		}
@@ -183,7 +183,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		log.info("Deleting Application Container " + applicationId);
 
 		ApplicationContainer container = getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId))
-				.findFirst().map(this::readContainer).orElse(null);
+		        .findFirst().map(this::readContainer).orElse(null);
 		if (container == null) {
 			return ApplicationContainer.empty();
 		}
@@ -198,13 +198,13 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		}
 
 		return ApplicationContainer.builder().name(applicationId).status(ContainerState.UNKNOWN)
-				.properties(new Properties()).starter(new Starter() {
+		        .properties(new Properties()).starter(new Starter() {
 
-					@Override
-					public void start() throws Exception {
+			        @Override
+			        public void start() throws Exception {
 
-					}
-				}).build();
+			        }
+		        }).build();
 
 	}
 
@@ -233,7 +233,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		if (pidFile.exists()) {
 			try {
 				newPidProcess = Processes
-						.newPidProcess(Integer.parseInt(FileUtils.readFileToString(pidFile, Charset.defaultCharset())));
+				        .newPidProcess(Integer.parseInt(FileUtils.readFileToString(pidFile, Charset.defaultCharset())));
 				state = ContainerState.RUNNING;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -262,8 +262,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		}
 
 		return ApplicationContainer.builder().name(applicationId).process(newPidProcess).status(state)
-				.properties(applicationProperties)
-				.starter(new MyStarter(applicationId, applicationDirectory, execCommand)).build();
+		        .properties(applicationProperties)
+		        .starter(new MyStarter(applicationId, applicationDirectory, execCommand)).build();
 
 	}
 
@@ -283,7 +283,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		public void start() throws Exception {
 
 			ProcessExecutor processExecutor = new JavaExecutable().processExecutor(execCommand)
-					.directory(applicationDirectory);
+			        .directory(applicationDirectory);
 
 			log.info("About to start process {}", processExecutor);
 

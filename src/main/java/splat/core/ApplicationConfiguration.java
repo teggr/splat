@@ -18,4 +18,9 @@ public class ApplicationConfiguration implements Comparable<ApplicationConfigura
 		return this.applicationId.compareToIgnoreCase(o.applicationId);
 	}
 
+	public static ApplicationConfigurationBuilder from(ApplicationConfiguration applicationConfiguration) {
+		return builder().name(applicationConfiguration.name).applicationId(applicationConfiguration.applicationId)
+		        .portRange(applicationConfiguration.portRange).artifact(applicationConfiguration.artifact);
+	}
+
 }
