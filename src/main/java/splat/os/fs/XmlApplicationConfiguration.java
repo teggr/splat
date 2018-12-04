@@ -12,8 +12,8 @@ public class XmlApplicationConfiguration {
 	private String applicationId;
 	private String name;
 	private String artifactName;
-	private int portRangeFromInclusive;
-	private int portRangeToInclusive;
+	private int portRangeFromInclusive = -1;
+	private int portRangeToInclusive = -1;
 
 	public XmlApplicationConfiguration(ApplicationConfiguration configuration) {
 		applicationId = configuration.getApplicationId();

@@ -32,4 +32,8 @@ public class Application implements Comparable<Application> {
 		return configuration.getApplicationId();
 	}
 
+	public String getHealth() {
+		return container.getStatus();
+	}
+
 }
