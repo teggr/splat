@@ -10,7 +10,6 @@ import splat.core.PortRange;
 @Slf4j
 public class Ports {
 
-	private static final String Integer = null;
 	private final Stack<Integer> portStack = new Stack<>();
 
 	public Ports(int fromInclusive, int toInclusive) {

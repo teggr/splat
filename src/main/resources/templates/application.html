@@ -47,9 +47,25 @@
 	    <div class="card" style="width: 18rem;">
 		  <div class="card-body">
 		    <h5 class="card-title">Port Range</h5>
-		    <th:block>
-			    <p class="card-text" th:if="${app.configuration.portRange.notRestricted}">Any</p>
-			    <p class="card-text" th:unless="${app.configuration.portRange.notRestricted}" th:text="${app.configuration.portRange}"></p>		    
+		    <th:block th:if="${app.configuration.portRange.notRestricted}">
+			    <p class="card-text" >Any</p>
+			    <form th:action="@{/applications/{id}(id=${app.id})}" method="post">
+			    	<div class="row">
+					    <div class="col">
+					      <input type="text" class="form-control" name="from" placeholder="from">
+					    </div>
+					    <div class="col">
+					      <input type="text" class="form-control" name="to" placeholder="to">
+					    </div>
+					  </div>
+   					<button type="submit" name="fixPorts" class="btn btn-default">Set Ports</button>
+   				</form>
+   			</th:block>
+   			<th:block th:unless="${app.configuration.portRange.notRestricted}">
+			    <p class="card-text"  th:text="${app.configuration.portRange}"></p>		
+			    <form th:action="@{/applications/{id}(id=${app.id})}" method="post">
+   					<button type="submit" name="clearPorts" class="btn btn-default">Clear Ports</button>
+   				</form>       			
    			</th:block>
 		  </div>
 		</div>

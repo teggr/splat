@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.RequiredArgsConstructor;
@@ -47,6 +48,23 @@ public class ApplicationsController {
 	        throws ApplicationServiceException {
 		applicationService.stop(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You stopped the application " + applicationId + "!");
+		return "redirect:/applications/" + applicationId;
+	}
+
+	@PostMapping(path = "/{id}", params = "fixPorts")
+	public String fixPorts(@PathVariable("id") String applicationId, @RequestParam("from") int from,
+	        @RequestParam("to") int to, RedirectAttributes redirectAttributes) throws ApplicationServiceException {
+		applicationService.fixPorts(applicationId, from, to);
+		redirectAttributes.addFlashAttribute("message",
+		        "You fixed the ports for " + applicationId + " " + from + ":" + to + "!");
+		return "redirect:/applications/" + applicationId;
+	}
+
+	@PostMapping(path = "/{id}", params = "clearPorts")
+	public String clearPorts(@PathVariable("id") String applicationId, RedirectAttributes redirectAttributes)
+	        throws ApplicationServiceException {
+		applicationService.clearPorts(applicationId);
+		redirectAttributes.addFlashAttribute("message", "You cleared the ports for " + applicationId + "!");
 		return "redirect:/applications/" + applicationId;
 	}
 

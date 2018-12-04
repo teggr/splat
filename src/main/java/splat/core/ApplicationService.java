@@ -21,4 +21,8 @@ public interface ApplicationService {
 
 	Application getApplication(String applicationId) throws ApplicationServiceException;
 
+	void fixPorts(String applicationId, int from, int to) throws ApplicationServiceException;
+
+	void clearPorts(String applicationId) throws ApplicationServiceException;
+
 }

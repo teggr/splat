@@ -46,7 +46,7 @@ public class SplatApplicationService implements ApplicationService, Initializing
 			}
 
 			ApplicationConfiguration configuration = ApplicationConfiguration.builder().applicationId(applicationId)
-					.name(applicationArtifact.getName()).artifact(applicationArtifact).build();
+			        .name(applicationArtifact.getName()).artifact(applicationArtifact).build();
 
 			ApplicationConfiguration applicationConfiguration = repository.save(configuration);
 			ApplicationContainer container = containers.start(configuration);
@@ -102,13 +102,29 @@ public class SplatApplicationService implements ApplicationService, Initializing
 
 	private Application toApplication(ApplicationConfiguration configuration, ApplicationContainer container) {
 		return new Application(locationService.getLocation(container.getServerPort(), container.getContextPath()),
-				configuration, container);
+		        configuration, container);
 	}
 
 	@Override
 	public Application getApplication(String applicationId) throws ApplicationServiceException {
 		ApplicationConfiguration configuration = repository.find(applicationId);
 		return toApplication(configuration, containers.get(applicationId));
+	}
+
+	@Override
+	public void fixPorts(String applicationId, int from, int to) throws ApplicationServiceException {
+		ApplicationConfiguration configuration = repository.find(applicationId);
+		ApplicationConfiguration newConfiguration = ApplicationConfiguration.from(configuration)
+		        .portRange(new PortRange(from, to)).build();
+		repository.save(newConfiguration);
+	}
+
+	@Override
+	public void clearPorts(String applicationId) throws ApplicationServiceException {
+		ApplicationConfiguration configuration = repository.find(applicationId);
+		ApplicationConfiguration newConfiguration = ApplicationConfiguration.from(configuration)
+		        .portRange(PortRange.NOT_RESTRICTED).build();
+		repository.save(newConfiguration);
 	}
 
 }
