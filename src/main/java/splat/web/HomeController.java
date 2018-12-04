@@ -20,12 +20,12 @@ import splat.core.ApplicationServiceException;
 @RequestMapping("/")
 public class HomeController {
 
-	private final ApplicationService applications;
+	private final ApplicationService applicationService;
 
 	@GetMapping
 	public String get(HttpServletRequest request, Model model) {
 		try {
-			model.addAttribute("applications", applications.getAllApplications());
+			model.addAttribute("applications", applicationService.getAllApplications());
 		} catch (ApplicationServiceException e) {
 			model.addAttribute("message", e.getMessage());
 		}
@@ -35,7 +35,7 @@ public class HomeController {
 	@PostMapping(params = "delete")
 	public String delete(@RequestParam("applicationId") String applicationId, RedirectAttributes redirectAttributes)
 			throws ApplicationServiceException {
-		applications.delete(applicationId);
+		applicationService.delete(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You deleted the application " + applicationId + "!");
 		return "redirect:/";
 	}
@@ -43,7 +43,7 @@ public class HomeController {
 	@PostMapping(params = "restart")
 	public String restart(@RequestParam("applicationId") String applicationId, RedirectAttributes redirectAttributes)
 			throws ApplicationServiceException {
-		applications.restart(applicationId);
+		applicationService.restart(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You restarted the application " + applicationId + "!");
 		return "redirect:/";
 	}
@@ -51,7 +51,7 @@ public class HomeController {
 	@PostMapping(params = "stop")
 	public String stop(@RequestParam("applicationId") String applicationId, RedirectAttributes redirectAttributes)
 			throws ApplicationServiceException {
-		applications.stop(applicationId);
+		applicationService.stop(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You stopped the application " + applicationId + "!");
 		return "redirect:/";
 	}

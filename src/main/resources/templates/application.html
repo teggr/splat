@@ -20,24 +20,21 @@
 	    
 	    	<div class="col">
    				<th:block th:if="${app.container.restartable}">
-    				<form th:action="@{/}" method="post">
-    					<input type="hidden" name="applicationId" th:value="${app.id}" />
+    				<form th:action="@{/applications/{id}(id=${app.id})}" method="post">
     					<button type="submit" name="restart" class="btn btn-default">Restart</button>
     				</form>
    				</th:block>
    			</div>
    			<div class="col">
    				<th:block th:if="${app.container.stoppable}">
-    				<form th:action="@{/}" method="post">
-    					<input type="hidden" name="applicationId" th:value="${app.id}" />
+    				<form th:action="@{/applications/{id}(id=${app.id})}" method="post">
     					<button type="submit" name="stop" class="btn btn-warning">Stop</button>
     				</form>
    				</th:block>
    			</div>
    			<div class="col">
    				<th:block th:if="${app.container.deletable}">
-    				<form th:action="@{/}" method="post">
-    					<input type="hidden" name="applicationId" th:value="${app.id}" />
+    				<form th:action="@{/applications/{id}(id=${app.id})}" method="post">
     					<button type="submit" name="delete" class="btn btn-danger">Delete</button>
     				</form>
    				</th:block>
