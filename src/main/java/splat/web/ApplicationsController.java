@@ -29,15 +29,15 @@ public class ApplicationsController {
 
 	@PostMapping(path = "/{id}", params = "delete")
 	public String delete(@PathVariable("id") String applicationId, RedirectAttributes redirectAttributes)
-	        throws ApplicationServiceException {
+			throws ApplicationServiceException {
 		applicationService.delete(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You deleted the application " + applicationId + "!");
-		return "redirect:/applications/" + applicationId;
+		return "redirect:/";
 	}
 
 	@PostMapping(path = "/{id}", params = "restart")
 	public String restart(@PathVariable("id") String applicationId, RedirectAttributes redirectAttributes)
-	        throws ApplicationServiceException {
+			throws ApplicationServiceException {
 		applicationService.restart(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You restarted the application " + applicationId + "!");
 		return "redirect:/applications/" + applicationId;
@@ -45,7 +45,7 @@ public class ApplicationsController {
 
 	@PostMapping(path = "/{id}", params = "stop")
 	public String stop(@PathVariable("id") String applicationId, RedirectAttributes redirectAttributes)
-	        throws ApplicationServiceException {
+			throws ApplicationServiceException {
 		applicationService.stop(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You stopped the application " + applicationId + "!");
 		return "redirect:/applications/" + applicationId;
@@ -53,16 +53,16 @@ public class ApplicationsController {
 
 	@PostMapping(path = "/{id}", params = "fixPorts")
 	public String fixPorts(@PathVariable("id") String applicationId, @RequestParam("from") int from,
-	        @RequestParam("to") int to, RedirectAttributes redirectAttributes) throws ApplicationServiceException {
+			@RequestParam("to") int to, RedirectAttributes redirectAttributes) throws ApplicationServiceException {
 		applicationService.fixPorts(applicationId, from, to);
 		redirectAttributes.addFlashAttribute("message",
-		        "You fixed the ports for " + applicationId + " " + from + ":" + to + "!");
+				"You fixed the ports for " + applicationId + " " + from + ":" + to + "!");
 		return "redirect:/applications/" + applicationId;
 	}
 
 	@PostMapping(path = "/{id}", params = "clearPorts")
 	public String clearPorts(@PathVariable("id") String applicationId, RedirectAttributes redirectAttributes)
-	        throws ApplicationServiceException {
+			throws ApplicationServiceException {
 		applicationService.clearPorts(applicationId);
 		redirectAttributes.addFlashAttribute("message", "You cleared the ports for " + applicationId + "!");
 		return "redirect:/applications/" + applicationId;
@@ -70,7 +70,7 @@ public class ApplicationsController {
 
 	@ExceptionHandler(Exception.class)
 	public String handleException(@PathVariable("id") String applicationId, Exception e,
-	        RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes) {
 		redirectAttributes.addFlashAttribute("message", e.getMessage());
 		return "redirect:/applications/" + applicationId;
 	}
