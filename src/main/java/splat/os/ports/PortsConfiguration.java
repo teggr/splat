@@ -8,7 +8,7 @@ public class PortsConfiguration {
 
 	@Bean
 	public Ports ports(PortsProperties properties) {
-		return new Ports(properties.getFromInclusive(), properties.getToInclusive());
+		return new Ports(properties.getPortRange());
 	}
 
 }

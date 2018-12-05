@@ -14,6 +14,8 @@ public interface ApplicationContainerService {
 
 	ApplicationContainer restart(String applicationId);
 
+	ApplicationContainer restart(ApplicationConfiguration newConfiguration);
+
 	Collection<ApplicationContainer> getAll();
 
 }

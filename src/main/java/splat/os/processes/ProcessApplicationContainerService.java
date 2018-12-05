@@ -7,6 +7,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.List;
 import java.util.Properties;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -60,8 +61,11 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 			throw new IOException("Could not create runtime directory " + runtimeDirectory + " with parent directorys");
 		}
 
-		getApplicationConfigurationDirectories().map(this::readContainer)
-		        .forEach(c -> ports.allocate(c.getServerPort()));
+		List<ApplicationContainer> containers = getApplicationConfigurationDirectories().map(this::readContainer)
+				.collect(Collectors.toList());
+		for (ApplicationContainer applicationContainer : containers) {
+			ports.reserve(applicationContainer.getServerPort());
+		}
 
 	}
 
@@ -73,7 +77,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 	@Override
 	public ApplicationContainer get(String applicationId) {
 		return getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId)).findFirst()
-		        .map(this::readContainer).orElse(ApplicationContainer.empty());
+				.map(this::readContainer).orElse(ApplicationContainer.empty());
 	}
 
 	@Override
@@ -118,7 +122,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 				throw new RuntimeException("Could not create application properties " + applicationProperties);
 			}
 			Properties properties = new Properties();
-			properties.setProperty(SpringBootApplicationProperties.SERVER_PORT, String.valueOf(ports.allocateFrom(configuration.getPortRange())));
+			properties.setProperty(SpringBootApplicationProperties.SERVER_PORT,
+					String.valueOf(ports.allocateWithinRange(configuration.getPortRange())));
 			properties.setProperty(SpringBootApplicationProperties.LOGGING_PATH, containerDirectory.getAbsolutePath());
 			properties.setProperty(SpringBootApplicationProperties.SPLAT_APPLICATION_CONTEXT_PATH, "/" + applicationId);
 			try (FileWriter writer = new FileWriter(applicationProperties)) {
@@ -157,7 +162,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		log.info("Stopping Application Container " + applicationId);
 
 		ApplicationContainer container = getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId))
-		        .findFirst().map(this::readContainer).orElse(null);
+				.findFirst().map(this::readContainer).orElse(null);
 		if (container == null) {
 			return ApplicationContainer.empty();
 		}
@@ -183,7 +188,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		log.info("Deleting Application Container " + applicationId);
 
 		ApplicationContainer container = getApplicationConfigurationDirectories().filter(directoryNameIs(applicationId))
-		        .findFirst().map(this::readContainer).orElse(null);
+				.findFirst().map(this::readContainer).orElse(null);
 		if (container == null) {
 			return ApplicationContainer.empty();
 		}
@@ -198,13 +203,13 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		}
 
 		return ApplicationContainer.builder().name(applicationId).status(ContainerState.UNKNOWN)
-		        .properties(new Properties()).starter(new Starter() {
+				.properties(new Properties()).starter(new Starter() {
 
-			        @Override
-			        public void start() throws Exception {
+					@Override
+					public void start() throws Exception {
 
-			        }
-		        }).build();
+					}
+				}).build();
 
 	}
 
@@ -215,6 +220,18 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 
 		ApplicationContainer applicationContainer = stop(applicationId);
 		return startContainer(applicationContainer);
+
+	}
+
+	@Override
+	public ApplicationContainer restart(ApplicationConfiguration newConfiguration) {
+
+		String applicationId = newConfiguration.getApplicationId();
+		log.info("Rebuilding Application Container " + applicationId);
+
+		ApplicationContainer stoppedContainer = stop(applicationId);
+		ApplicationContainer deletedContainer = delete(applicationId);
+		return start(newConfiguration);
 
 	}
 
@@ -233,7 +250,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		if (pidFile.exists()) {
 			try {
 				newPidProcess = Processes
-				        .newPidProcess(Integer.parseInt(FileUtils.readFileToString(pidFile, Charset.defaultCharset())));
+						.newPidProcess(Integer.parseInt(FileUtils.readFileToString(pidFile, Charset.defaultCharset())));
 				state = ContainerState.RUNNING;
 			} catch (Exception e) {
 				throw new RuntimeException(e);
@@ -262,8 +279,8 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		}
 
 		return ApplicationContainer.builder().name(applicationId).process(newPidProcess).status(state)
-		        .properties(applicationProperties)
-		        .starter(new MyStarter(applicationId, applicationDirectory, execCommand)).build();
+				.properties(applicationProperties)
+				.starter(new MyStarter(applicationId, applicationDirectory, execCommand)).build();
 
 	}
 
@@ -283,7 +300,7 @@ public class ProcessApplicationContainerService implements ApplicationContainerS
 		public void start() throws Exception {
 
 			ProcessExecutor processExecutor = new JavaExecutable().processExecutor(execCommand)
-			        .directory(applicationDirectory);
+					.directory(applicationDirectory);
 
 			log.info("About to start process {}", processExecutor);
 
