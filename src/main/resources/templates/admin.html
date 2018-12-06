@@ -8,7 +8,7 @@
     <th:block th:replace="fragments/header :: common" />
     <th:block th:replace="fragments/messages :: common" />
     
-    <div class="container">
+    <div class="container mt-3">
 	    <h1>Admin</h1>
 	    <form th:action="${#httpServletRequest.requestURI}" method="post" th:object="${adminForm}">
 	    	<div class="form-group">

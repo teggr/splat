@@ -25,8 +25,24 @@ public class WebSecurityConfig {
 		return new WebSecurityConfigurerAdapter() {
 			@Override
 			protected void configure(HttpSecurity http) throws Exception {
+				
+				// @formatter:off
+ 
+				http
+					.authorizeRequests()
+						.antMatchers("/favicons/**").permitAll()
+						.anyRequest().authenticated()						
+						.and()
+					.formLogin()
+						.loginPage("/login")
+							.permitAll()
+							.and()
+						.logout()
+							.permitAll();
+				
+				// @formatter:on
 
-				http.authorizeRequests().anyRequest().authenticated().and().formLogin().and().logout().permitAll();
+
 
 				// http.requestMatcher(EndpointRequest.toAnyEndpoint()).authorizeRequests().anyRequest().permitAll();
 
@@ -37,7 +53,7 @@ public class WebSecurityConfig {
 			protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
 				UserBuilder builder = User.withDefaultPasswordEncoder().username(accessProperties.getUsername())
-						.password(accessProperties.getPassword()).roles("USER");
+				        .password(accessProperties.getPassword()).roles("USER");
 
 				auth.inMemoryAuthentication().withUser(builder);
 
