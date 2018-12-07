@@ -142,9 +142,15 @@ Create the systemd service script
 	
 # upload application
 
+## via the application
+
 1. go to index.html
 2. log in
 3. upload the a spring boot jar
+
+## using curl
+
+	curl --verbose --user "splat:splat" --form file=@target/spring-test-app-0.0.1-SNAPSHOT.jar "http://localhost:7171/api/applications"
 
 # Troubleshooting
 

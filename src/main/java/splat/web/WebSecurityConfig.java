@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.User.UserBuilder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -28,10 +29,16 @@ public class WebSecurityConfig {
 				
 				// @formatter:off
  
+				BasicAuthenticationEntryPoint basicAuthenticationEntryPoint = new BasicAuthenticationEntryPoint();
+				basicAuthenticationEntryPoint.setRealmName("Splat");
+				
 				http
 					.authorizeRequests()
 						.antMatchers("/favicons/**").permitAll()
 						.anyRequest().authenticated()						
+						.and()
+					.httpBasic()
+						.authenticationEntryPoint(basicAuthenticationEntryPoint)
 						.and()
 					.formLogin()
 						.loginPage("/login")
